@@ -4,6 +4,7 @@ import (
 	"douyin-backend/app/global/my_errors"
 	"douyin-backend/app/global/variable"
 	"log"
+	"strings"
 	"sync"
 )
 
@@ -40,4 +41,16 @@ func (c *Containers) Get(key string) interface{} {
 
 func (c *Containers) KeyIsExists(key string) (interface{}, bool) {
 	return sMap.Load(key)
+}
+
+// FuzzyDelete 按照键的前缀模糊删除容器中注册的内容
+func (c *Containers) FuzzyDelete(keyPre string) {
+	sMap.Range(func(key, value interface{}) bool {
+		if keyName, ok := key.(string); ok {
+			if strings.HasPrefix(keyName, keyPre) {
+				sMap.Delete(keyName)
+			}
+		}
+		return true
+	})
 }

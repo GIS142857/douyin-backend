@@ -9,9 +9,10 @@ import (
 )
 
 type GetFriends struct {
+	Id
 }
 
-func (g *GetFriends) CheckParams(context *gin.Context) {
+func (g GetFriends) CheckParams(context *gin.Context) {
 	//1.基本的验证规则没有通过
 	if err := context.ShouldBind(&g); err != nil {
 		response.ValidatorError(context, err)

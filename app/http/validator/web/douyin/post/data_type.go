@@ -1,4 +1,4 @@
-package video
+package post
 
 type BaseField struct {
 	Name   string   `form:"name" json:"name" binding:"required,min=1"`
@@ -21,12 +21,4 @@ type Fid struct {
 
 type Name struct {
 	Name string `form:"name" json:"name" `
-}
-
-type PageNo struct {
-	PageNo float64 `form:"pageNo" json:"pageNo" binding:"required,min=1"`
-}
-
-type PageSize struct {
-	PageSize float64 `form:"pageSize" json:"pageSize" binding:"required,min=1"`
 }

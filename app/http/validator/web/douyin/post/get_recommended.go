@@ -1,4 +1,4 @@
-package shop
+package post
 
 import (
 	"douyin-backend/app/global/consts"
@@ -8,10 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type GetShopRecommended struct {
+type GetPostRecommended struct {
 }
 
-func (g GetShopRecommended) CheckParams(context *gin.Context) {
+func (g GetPostRecommended) CheckParams(context *gin.Context) {
 	//1.基本的验证规则没有通过
 	if err := context.ShouldBind(&g); err != nil {
 		response.ValidatorError(context, err)
@@ -23,6 +23,6 @@ func (g GetShopRecommended) CheckParams(context *gin.Context) {
 		response.ErrorSystem(context, "get_panel 表单验证器json化失败", "")
 	} else {
 		// 验证完成，调用控制器，写具体业务逻辑
-		(&web.ShopController{}).GetRecommended(extraAddBindDataContext)
+		(&web.PostController{}).GetRecommended(extraAddBindDataContext)
 	}
 }

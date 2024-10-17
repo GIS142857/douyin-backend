@@ -11,7 +11,7 @@ import (
 type GetHistory struct {
 }
 
-func (g *GetHistory) CheckParams(context *gin.Context) {
+func (g GetHistory) CheckParams(context *gin.Context) {
 	//1.基本的验证规则没有通过
 	if err := context.ShouldBind(&g); err != nil {
 		response.ValidatorError(context, err)
