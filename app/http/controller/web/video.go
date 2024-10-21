@@ -3,15 +3,8 @@ package web
 import (
 	"douyin-backend/app/global/consts"
 	"douyin-backend/app/model/video"
-	"douyin-backend/app/utils/response"
 	"github.com/gin-gonic/gin"
 )
-
-type Response struct {
-	Code    int         `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
-}
 
 type VideoController struct {
 }
@@ -77,15 +70,29 @@ func (u *VideoController) GetHistoryOther(context *gin.Context) {
 }
 
 func (u *VideoController) GetMyVideo(ctx *gin.Context) {
-
+	var Uid = ctx.GetFloat64(consts.ValidatorPrefix + "uid")
 	var PageNo = ctx.GetFloat64(consts.ValidatorPrefix + "pageNo")
 	var PageSize = ctx.GetFloat64(consts.ValidatorPrefix + "pageSize")
-
-	data := video.CreateShortVideoFactory("").GetVideo(int64(PageNo), int64(PageSize))
-	if len(data) > 0 {
-		response.Success(ctx, consts.CurdStatusOkMsg, data)
+	//fmt.Println(Uid, PageNo, PageSize)
+	list, total := video.CreateShortVideoFactory("").GetMyVideo(int64(Uid), int64(PageNo), int64(PageSize))
+	if len(list) != 0 {
+		ctx.JSON(consts.CurdStatusOkCode, gin.H{
+			"success": true,
+			"data": gin.H{
+				"pageNo": PageNo,
+				"total":  total,
+				"list":   list,
+			},
+		})
 	} else {
-		response.Fail(ctx, consts.CurdSelectFailCode, consts.CurdSelectFailMsg, "")
+		ctx.JSON(consts.CurdSelectFailCode, gin.H{
+			"success": false,
+			"data": gin.H{
+				"pageNo": PageNo,
+				"total":  total,
+				"list":   []interface{}{}, // 返回一个空数组以确保响应一致性
+			},
+		})
 	}
 }
 func (u *VideoController) GetLongRecommended(context *gin.Context) {
