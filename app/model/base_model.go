@@ -7,13 +7,6 @@ import (
 	"strings"
 )
 
-type BaseModel struct {
-	*gorm.DB  `gorm:"-" json:"-"`
-	Id        int64  `gorm:"primaryKey" json:"id"`
-	CreatedAt string `json:"created_at"` // 时间日期直接按照字符串处理即可
-	UpdatedAt string `json:"updated_at"`
-}
-
 func UseDbConn(sqlType string) *gorm.DB {
 	var db *gorm.DB
 	sqlType = strings.Trim(sqlType, " ")
