@@ -27,14 +27,21 @@ func WebRegisterValidator() {
 		key = consts.ValidatorPrefix + "GetFriends"
 		containers.Set(key, user.GetFriends{})
 
-		key = consts.ValidatorPrefix + "GetCollect"
-		containers.Set(key, user.GetCollect{})
+		key = consts.ValidatorPrefix + "GetMyVideo"
+		containers.Set(key, user.GetMyVideo{})
+
+		key = consts.ValidatorPrefix + "GetMyPrivateVideo"
+		containers.Set(key, user.GetMyPrivateVideo{})
+
+		key = consts.ValidatorPrefix + "GetMyLikeVideo"
+		containers.Set(key, user.GetMyLikeVideo{})
+
+		key = consts.ValidatorPrefix + "GetMyCollectVideo"
+		containers.Set(key, user.GetMyCollectVideo{})
+
 	}
 	// video
 	{
-		key = consts.ValidatorPrefix + "GetLike"
-		containers.Set(key, video.GetLike{})
-
 		key = consts.ValidatorPrefix + "GetComments"
 		containers.Set(key, video.GetComments{})
 
@@ -52,12 +59,6 @@ func WebRegisterValidator() {
 
 		key = consts.ValidatorPrefix + "GetLongRecommended"
 		containers.Set(key, video.GetLongRecommended{})
-
-		key = consts.ValidatorPrefix + "GetMyVideo"
-		containers.Set(key, video.GetMyVideo{})
-
-		key = consts.ValidatorPrefix + "GetPrivate"
-		containers.Set(key, video.GetPrivate{})
 	}
 	// shop
 	{

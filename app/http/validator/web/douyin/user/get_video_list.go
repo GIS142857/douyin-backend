@@ -9,7 +9,6 @@ import (
 )
 
 type GetVideoList struct {
-	Id
 }
 
 func (g GetVideoList) CheckParams(context *gin.Context) {

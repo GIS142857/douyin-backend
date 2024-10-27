@@ -9,7 +9,6 @@ import (
 )
 
 type GetPanel struct {
-	Id
 }
 
 func (g GetPanel) CheckParams(context *gin.Context) {
