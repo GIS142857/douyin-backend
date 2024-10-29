@@ -10,7 +10,7 @@ Gormv2: # 只针对 gorm  操作数据库有效
       Prefix: "tb_"   #  目前没有用到该配置项
       User: "root"
       Pass: "04102410"  # 修改为你自己的数据库密码
-      Charset: "utf8"
+      Charset: "utf8mb4"
       SetMaxIdleConns: 10
       SetMaxOpenConns: 128
       SetConnMaxLifetime: 60    # 连接不活动时的最大生存时间(秒)
@@ -18,13 +18,13 @@ Gormv2: # 只针对 gorm  操作数据库有效
       #PingFailRetryTimes: 3   # 保留项,最大重连次数
     IsOpenReadDb: 0                     # 是否开启读写分离配置（1=开启、0=关闭），IsOpenReadDb=1,Read 部分参数有效，否则Read部分参数直接忽略
     Read:
-      Host: "192.168.1.10"
+      Host: "127.0.0.1"
       DataBase: "db_douyin"
       Port: 3306                        #注意，非3306，请自行调整
       Prefix: "tb_"
       User: "root"
       Pass: "04102410"  # 修改为你自己的数据库密码
-      Charset: "utf8"
+      Charset: "utf8mb4"
       SetMaxIdleConns: 10
       SetMaxOpenConns: 128
       SetConnMaxLifetime: 60

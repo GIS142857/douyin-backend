@@ -1,8 +1,12 @@
 package video
 
-import "gorm.io/gorm"
+import (
+	"douyin-backend/app/model"
+	"fmt"
+	"gorm.io/gorm"
+)
 
-type Comment struct {
+type CommentModel struct {
 	*gorm.DB        `gorm:"-" json:"-"`
 	CommentID       int64  `json:"comment_id"`        // bigint
 	CreateTime      int    `json:"create_time"`       // int
@@ -24,4 +28,23 @@ type Comment struct {
 	Avatar          string `json:"avatar"`            // text
 	SubCommentCount int64  `json:"sub_comment_count"` // bigint
 	LastModifyTS    int64  `json:"last_modify_ts"`    // bigint
+}
+
+func CreateCommentFactory(sqlType string) *CommentModel {
+	return &CommentModel{DB: model.UseDbConn(sqlType)}
+}
+
+func (c *CommentModel) GetComments(aweme_id int64) (comments []Comment) {
+	sql := `
+		SELECT *
+		FROM tb_comments as tc
+		WHERE aweme_id = ?
+		ORDER BY create_time DESC;
+	`
+	result := c.Raw(sql, aweme_id).Scan(&comments)
+	if result.Error != nil {
+		fmt.Println("Query Error:", result.Error)
+		return nil
+	}
+	return
 }
