@@ -1,7 +1,7 @@
 package video
 
 type Uid struct {
-	Uid *float64 `form:"uid" json:"uid" binding:"required,min=0"`
+	Uid *string `form:"uid" json:"uid" binding:"required,numeric"`
 }
 
 type Start struct {
@@ -17,5 +17,5 @@ type PageSize struct {
 }
 
 type AwemeID struct {
-	AwemeID *float64 `form:"aweme_id" json:"aweme_id" binding:"required,min=0"`
+	AwemeID *string `form:"aweme_id" json:"aweme_id" binding:"required,numeric"`
 }

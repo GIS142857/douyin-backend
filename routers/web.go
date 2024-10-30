@@ -58,8 +58,9 @@ func InitWebRouter() *gin.Engine {
 
 	user := router.Group("user/")
 	{
+		user.GET("login", validatorFactory.Create(consts.ValidatorPrefix+"UserLogin"))
 		user.GET("userinfo", validatorFactory.Create(consts.ValidatorPrefix+"GetUserInfo"))
-		user.GET("video_list", validatorFactory.Create(consts.ValidatorPrefix+"GetVideoList"))
+		user.GET("video_list", validatorFactory.Create(consts.ValidatorPrefix+"GetUserVideoList"))
 		user.GET("panel", validatorFactory.Create(consts.ValidatorPrefix+"GetPanel"))
 		user.GET("friends", validatorFactory.Create(consts.ValidatorPrefix+"GetFriends"))
 		// 用户界面视频加载 API
@@ -70,7 +71,6 @@ func InitWebRouter() *gin.Engine {
 		user.GET("my_history_video", validatorFactory.Create(consts.ValidatorPrefix+"GetMyHistoryVideo"))
 		user.GET("my_history_other", validatorFactory.Create(consts.ValidatorPrefix+"GetMyHistoryOther"))
 	}
-	// TODO 查看 post 是否需要合并到其他路由组里面
 	post := router.Group("post/")
 	{
 		post.GET("recommended", validatorFactory.Create(consts.ValidatorPrefix+"GetPostRecommended"))
@@ -81,11 +81,12 @@ func InitWebRouter() *gin.Engine {
 	}
 	video := router.Group("video/")
 	{
+		video.POST("digg", validatorFactory.Create(consts.ValidatorPrefix+"VideoDigg"))
 		video.GET("comments", validatorFactory.Create(consts.ValidatorPrefix+"GetComments"))
 		video.GET("recommended", validatorFactory.Create(consts.ValidatorPrefix+"GetVideoRecommended"))
 		video.GET("star", validatorFactory.Create(consts.ValidatorPrefix+"GetStar"))
 		video.GET("share", validatorFactory.Create(consts.ValidatorPrefix+"GetShare"))
-		video.GET("long/recommended/", validatorFactory.Create(consts.ValidatorPrefix+"GetLongRecommended"))
+		video.GET("long_recommended", validatorFactory.Create(consts.ValidatorPrefix+"GetLongVideoRecommended"))
 	}
 	return router
 }

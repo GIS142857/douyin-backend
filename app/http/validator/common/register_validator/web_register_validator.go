@@ -15,11 +15,14 @@ func WebRegisterValidator() {
 	var key string
 	// user
 	{
+		key = consts.ValidatorPrefix + "UserLogin"
+		containers.Set(key, user.Login{})
+
 		key = consts.ValidatorPrefix + "GetUserInfo"
 		containers.Set(key, user.GetUserInfo{})
 
-		key = consts.ValidatorPrefix + "GetVideoList"
-		containers.Set(key, user.GetVideoList{})
+		key = consts.ValidatorPrefix + "GetUserVideoList"
+		containers.Set(key, user.GetUserVideoList{})
 
 		key = consts.ValidatorPrefix + "GetPanel"
 		containers.Set(key, user.GetPanel{})
@@ -51,6 +54,9 @@ func WebRegisterValidator() {
 		key = consts.ValidatorPrefix + "GetVideoRecommended"
 		containers.Set(key, video.GetVideoRecommended{})
 
+		key = consts.ValidatorPrefix + "GetLongVideoRecommended"
+		containers.Set(key, video.GetLongVideoRecommended{})
+
 		key = consts.ValidatorPrefix + "GetComments"
 		containers.Set(key, video.GetComments{})
 
@@ -60,8 +66,8 @@ func WebRegisterValidator() {
 		key = consts.ValidatorPrefix + "GetShare"
 		containers.Set(key, video.GetShare{})
 
-		key = consts.ValidatorPrefix + "GetLongRecommended"
-		containers.Set(key, video.GetLongRecommended{})
+		key = consts.ValidatorPrefix + "VideoDigg"
+		containers.Set(key, video.VideoDigg{})
 	}
 	// shop
 	{

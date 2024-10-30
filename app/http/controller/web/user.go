@@ -3,11 +3,33 @@ package web
 import (
 	"douyin-backend/app/global/consts"
 	"douyin-backend/app/model/user"
+	"douyin-backend/app/model/video"
 	"douyin-backend/app/utils/response"
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"strconv"
 )
 
 type UserController struct {
+}
+
+func (u *UserController) Login(ctx *gin.Context) {
+	var phone = ctx.GetFloat64(consts.ValidatorPrefix + "phone")
+	var password = ctx.Query("password")
+	userIsExist, uid := user.CreateUserFactory("").Login(int64(phone), password)
+	if userIsExist {
+		ctx.JSON(http.StatusOK, gin.H{
+			"isExist": true,
+			"uid":     uid,
+			"msg":     "用户存在",
+		})
+	} else {
+		ctx.JSON(http.StatusNoContent, gin.H{
+			"isExist": false,
+			"uid":     0,
+			"msg":     "用户不存在",
+		})
+	}
 }
 
 func (u *UserController) GetUserInfo(context *gin.Context) {
@@ -22,16 +44,15 @@ func (u *UserController) GetUserInfo(context *gin.Context) {
 	//}
 }
 
-func (u *UserController) GetVideoList(context *gin.Context) {
+func (u *UserController) GetUserVideoList(ctx *gin.Context) {
 	// TODO 具体业务逻辑实现
-	response.Success(context, consts.CurdStatusOkMsg, "GetVideoList-ok")
-	//var id = context.GetFloat64(consts.ValidatorPrefix + "id")
-	//video := sv_home.CreateShortVideoFactory("").GetVideoById(int(id))
-	//if video.Id != 0 {
-	//	response.Success(context, consts.CurdStatusOkMsg, video)
-	//} else {
-	//	response.Fail(context, consts.CurdSelectFailCode, consts.CurdSelectFailMsg, "")
-	//}
+	uid, _ := strconv.Atoi(ctx.Query("uid"))
+	videoList := video.CreateVideoFactory("").GetUserVideoList(int64(uid))
+	if len(videoList) > 0 {
+		ctx.JSON(http.StatusOK, videoList)
+	} else {
+		ctx.JSON(http.StatusNoContent, []interface{}{})
+	}
 }
 
 func (u *UserController) GetPanel(ctx *gin.Context) {
@@ -40,37 +61,35 @@ func (u *UserController) GetPanel(ctx *gin.Context) {
 	var Uid = ctx.GetFloat64(consts.ValidatorPrefix + "uid")
 	userinfo := user.CreateUserFactory("").GetPanel(int64(Uid))
 	if userinfo.Uid > 0 {
-		ctx.JSON(consts.CurdStatusOkCode, userinfo)
+		ctx.JSON(http.StatusOK, userinfo)
 	} else {
-		ctx.JSON(consts.CurdSelectFailCode, "")
+		ctx.JSON(http.StatusNoContent, "")
 	}
 }
 
-func (u *UserController) GetFriends(context *gin.Context) {
-	// TODO 具体业务逻辑实现
-	response.Success(context, consts.CurdStatusOkMsg, "GetFriends-ok")
-	//var id = context.GetFloat64(consts.ValidatorPrefix + "id")
-	//video := sv_home.CreateShortVideoFactory("").GetVideoById(int(id))
-	//if video.Id != 0 {
-	//	response.Success(context, consts.CurdStatusOkMsg, video)
-	//} else {
-	//	response.Fail(context, consts.CurdSelectFailCode, consts.CurdSelectFailMsg, "")
-	//}
+func (u *UserController) GetFriends(ctx *gin.Context) {
+	var uid = ctx.GetFloat64(consts.ValidatorPrefix + "uid")
+	friends := user.CreateUserFactory("").GetFriends(int64(uid))
+	if len(friends) > 0 {
+		ctx.JSON(http.StatusOK, friends)
+	} else {
+		ctx.JSON(http.StatusNoContent, []interface{}{})
+	}
 }
 
 func (u *UserController) GetMyVideo(ctx *gin.Context) {
 	var Uid = ctx.GetFloat64(consts.ValidatorPrefix + "uid")
 	var PageNo = ctx.GetFloat64(consts.ValidatorPrefix + "pageNo")
 	var PageSize = ctx.GetFloat64(consts.ValidatorPrefix + "pageSize")
-	list, total := user.CreateVideoFactory("").GetMyVideo(int64(Uid), int64(PageNo), int64(PageSize))
+	list, total := video.CreateVideoFactory("").GetMyVideo(int64(Uid), int64(PageNo), int64(PageSize))
 	if len(list) > 0 {
-		ctx.JSON(consts.CurdStatusOkCode, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"pageNo": PageNo,
 			"total":  total,
 			"list":   list,
 		})
 	} else {
-		ctx.JSON(consts.CurdSelectFailCode, gin.H{
+		ctx.JSON(http.StatusNoContent, gin.H{
 			"pageNo": PageNo,
 			"total":  total,
 			"list":   []interface{}{}, // 返回一个空数组以确保响应一致性
@@ -82,15 +101,15 @@ func (u *UserController) GetMyPrivateVideo(ctx *gin.Context) {
 	var Uid = ctx.GetFloat64(consts.ValidatorPrefix + "uid")
 	var PageNo = ctx.GetFloat64(consts.ValidatorPrefix + "pageNo")
 	var PageSize = ctx.GetFloat64(consts.ValidatorPrefix + "pageSize")
-	list, total := user.CreateVideoFactory("").GetMyPrivateVideo(int64(Uid), int64(PageNo), int64(PageSize))
+	list, total := video.CreateVideoFactory("").GetMyPrivateVideo(int64(Uid), int64(PageNo), int64(PageSize))
 	if len(list) > 0 {
-		ctx.JSON(consts.CurdStatusOkCode, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"pageNo": PageNo,
 			"total":  total,
 			"list":   list,
 		})
 	} else {
-		ctx.JSON(consts.CurdSelectFailCode, gin.H{
+		ctx.JSON(http.StatusNoContent, gin.H{
 			"pageNo": PageNo,
 			"total":  total,
 			"list":   []interface{}{}, // 返回一个空数组以确保响应一致性
@@ -102,15 +121,15 @@ func (u *UserController) GetMyLikeVideo(ctx *gin.Context) {
 	var Uid = ctx.GetFloat64(consts.ValidatorPrefix + "uid")
 	var PageNo = ctx.GetFloat64(consts.ValidatorPrefix + "pageNo")
 	var PageSize = ctx.GetFloat64(consts.ValidatorPrefix + "pageSize")
-	list, total := user.CreateVideoFactory("").GetMyLikeVideo(int64(Uid), int64(PageNo), int64(PageSize))
+	list, total := video.CreateVideoFactory("").GetMyLikeVideo(int64(Uid), int64(PageNo), int64(PageSize))
 	if len(list) > 0 {
-		ctx.JSON(consts.CurdStatusOkCode, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"pageNo": PageNo,
 			"total":  total,
 			"list":   list,
 		})
 	} else {
-		ctx.JSON(consts.CurdSelectFailCode, gin.H{
+		ctx.JSON(http.StatusNoContent, gin.H{
 			"pageNo": PageNo,
 			"total":  total,
 			"list":   []interface{}{}, // 返回一个空数组以确保响应一致性
@@ -122,9 +141,9 @@ func (u *UserController) GetMyCollectVideo(ctx *gin.Context) {
 	var Uid = ctx.GetFloat64(consts.ValidatorPrefix + "uid")
 	var PageNo = ctx.GetFloat64(consts.ValidatorPrefix + "pageNo")
 	var PageSize = ctx.GetFloat64(consts.ValidatorPrefix + "pageSize")
-	list, total := user.CreateVideoFactory("").GetMyCollectVideo(int64(Uid), int64(PageNo), int64(PageSize))
+	list, total := video.CreateVideoFactory("").GetMyCollectVideo(int64(Uid), int64(PageNo), int64(PageSize))
 	if len(list) > 0 {
-		ctx.JSON(consts.CurdStatusOkCode, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"video": gin.H{
 				"pageNo": PageNo,
 				"total":  total,
@@ -136,7 +155,7 @@ func (u *UserController) GetMyCollectVideo(ctx *gin.Context) {
 			},
 		})
 	} else {
-		ctx.JSON(consts.CurdSelectFailCode, gin.H{
+		ctx.JSON(http.StatusNoContent, gin.H{
 			"video": gin.H{
 				"pageNo": PageNo,
 				"total":  total,
@@ -155,16 +174,16 @@ func (u *UserController) GetMyHistoryVideo(ctx *gin.Context) {
 	var PageNo = ctx.GetFloat64(consts.ValidatorPrefix + "pageNo")
 	var PageSize = ctx.GetFloat64(consts.ValidatorPrefix + "pageSize")
 
-	list, total := user.CreateVideoFactory("").GetMyHistoryVideo(int64(Uid), int64(PageNo), int64(PageSize))
+	list, total := video.CreateVideoFactory("").GetMyHistoryVideo(int64(Uid), int64(PageNo), int64(PageSize))
 
 	if len(list) > 0 {
-		ctx.JSON(consts.CurdStatusOkCode, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"pageNo": PageNo,
 			"total":  total,
 			"list":   list,
 		})
 	} else {
-		ctx.JSON(consts.CurdSelectFailCode, gin.H{
+		ctx.JSON(http.StatusNoContent, gin.H{
 			"pageNo": PageNo,
 			"total":  total,
 			"list":   []interface{}{}, // 返回一个空数组以确保响应一致性

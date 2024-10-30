@@ -9,6 +9,9 @@ import (
 )
 
 type GetShopRecommended struct {
+	Uid
+	PageNo
+	PageSize
 }
 
 func (g GetShopRecommended) CheckParams(context *gin.Context) {
@@ -23,6 +26,6 @@ func (g GetShopRecommended) CheckParams(context *gin.Context) {
 		response.ErrorSystem(context, "get_panel 表单验证器json化失败", "")
 	} else {
 		// 验证完成，调用控制器，写具体业务逻辑
-		(&web.ShopController{}).GetRecommended(extraAddBindDataContext)
+		(&web.ShopController{}).GetShopRecommended(extraAddBindDataContext)
 	}
 }

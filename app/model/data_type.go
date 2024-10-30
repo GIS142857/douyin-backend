@@ -47,7 +47,7 @@ type User struct {
 
 type Video struct {
 	*gorm.DB        `gorm:"-" json:"-"`
-	AwemeID         int64           `json:"aweme_id"`         // bigint
+	AwemeID         string          `json:"aweme_id"`         // bigint
 	VideoDesc       string          `json:"video_desc"`       // text
 	CreateTime      int             `json:"create_time"`      // int
 	Music           json.RawMessage `json:"music"`            // json

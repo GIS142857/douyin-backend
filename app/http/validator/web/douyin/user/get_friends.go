@@ -9,6 +9,7 @@ import (
 )
 
 type GetFriends struct {
+	Uid
 }
 
 func (g GetFriends) CheckParams(context *gin.Context) {
