@@ -43,7 +43,8 @@ go run cmd/web/main.go
 由于取消了前端的请求拦截以及将前端的部分代码做了修改，所以需要使用我修改过的前端代码进行部署，修改版的前端代码我放在了 frontend 目录，在使用时替换掉对应的 src 文件夹。
 
 ## 技术交流
-您可以联系我的邮箱 <a href="mailto:fridalongwayhk4@gmail.com">fridalongwayhk4@gmail.com</a>
+目前项目还需补充更多功能，欢迎提交 `PR`，非常感谢你对我们的支持！
+技术交流可以联系我的邮箱 <a href="mailto:fridalongwayhk4@gmail.com">fridalongwayhk4@gmail.com</a>
 
 ## 许可证
 [GPL](LICENSE)
