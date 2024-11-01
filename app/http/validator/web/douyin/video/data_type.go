@@ -1,5 +1,17 @@
 package video
 
+type IpLocation struct {
+	IpLocation *string `form:"ip_location" json:"ip_location"`
+}
+
+type ShareUidList struct {
+	ShareUidList *string `form:"share_uid_list" json:"share_uid_list"`
+}
+
+type Message struct {
+	Message *string `form:"message" json:"message"`
+}
+
 type Uid struct {
 	Uid *string `form:"uid" json:"uid" binding:"required,numeric"`
 }
@@ -18,4 +30,28 @@ type PageSize struct {
 
 type AwemeID struct {
 	AwemeID *string `form:"aweme_id" json:"aweme_id" binding:"required,numeric"`
+}
+
+type Content struct {
+	Content *string `form:"content" json:"content" binding:"required"`
+}
+
+type ShortID struct {
+	ShortID *string `form:"short_id" json:"short_id"`
+}
+
+type UniqueID struct {
+	UniqueID *string `form:"unique_id" json:"unique_id"`
+}
+
+type Signature struct {
+	Signature *string `form:"signature" json:"signature"`
+}
+
+type Nickname struct {
+	Nickname *string `form:"nickname" json:"nickname"`
+}
+
+type Avatar struct {
+	Avatar *string `form:"avatar" json:"avatar"`
 }

@@ -68,6 +68,15 @@ func WebRegisterValidator() {
 
 		key = consts.ValidatorPrefix + "VideoDigg"
 		containers.Set(key, video.VideoDigg{})
+
+		key = consts.ValidatorPrefix + "VideoComment"
+		containers.Set(key, video.VideoComment{})
+
+		key = consts.ValidatorPrefix + "VideoCollect"
+		containers.Set(key, video.VideoCollect{})
+
+		key = consts.ValidatorPrefix + "VideoShare"
+		containers.Set(key, video.VideoShare{})
 	}
 	// shop
 	{

@@ -4,6 +4,7 @@ import (
 	"douyin-backend/app/model"
 	"fmt"
 	"gorm.io/gorm"
+	"time"
 )
 
 type CommentModel struct {
@@ -47,4 +48,26 @@ func (c *CommentModel) GetComments(aweme_id int64) (comments []Comment) {
 		return nil
 	}
 	return
+}
+
+func (c *CommentModel) VideoComment(uid, awemeID int64, ip_location, content, short_id, unique_id, signature, nickname, avatar string) bool {
+	currentTime := time.Now().Unix()
+	sql2 := `
+		INSERT INTO tb_comments (create_time,
+		                         ip_location,
+		                         aweme_id,
+		                         content,
+		                         user_id,
+		                         short_user_id,
+		                         user_unique_id,
+		                         user_signature,
+		                         nickname,
+		                         avatar,
+		                         last_modify_ts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
+	result := c.Exec(sql2, currentTime, ip_location, awemeID, content, uid, short_id, unique_id, signature, nickname, avatar, currentTime)
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
 }

@@ -82,10 +82,12 @@ func InitWebRouter() *gin.Engine {
 	video := router.Group("video/")
 	{
 		video.POST("digg", validatorFactory.Create(consts.ValidatorPrefix+"VideoDigg"))
+		video.POST("comment", validatorFactory.Create(consts.ValidatorPrefix+"VideoComment"))
+		video.POST("collect", validatorFactory.Create(consts.ValidatorPrefix+"VideoCollect"))
+		video.POST("share", validatorFactory.Create(consts.ValidatorPrefix+"VideoShare"))
 		video.GET("comments", validatorFactory.Create(consts.ValidatorPrefix+"GetComments"))
 		video.GET("recommended", validatorFactory.Create(consts.ValidatorPrefix+"GetVideoRecommended"))
 		video.GET("star", validatorFactory.Create(consts.ValidatorPrefix+"GetStar"))
-		video.GET("share", validatorFactory.Create(consts.ValidatorPrefix+"GetShare"))
 		video.GET("long_recommended", validatorFactory.Create(consts.ValidatorPrefix+"GetLongVideoRecommended"))
 	}
 	return router

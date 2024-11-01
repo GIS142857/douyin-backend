@@ -3,10 +3,8 @@ package video
 import (
 	"douyin-backend/app/global/variable"
 	"douyin-backend/app/model"
-	"fmt"
 	"github.com/goccy/go-json"
 	"gorm.io/gorm"
-	"time"
 )
 
 type VideoModel struct {
@@ -37,19 +35,6 @@ type VideoModel struct {
 
 func CreateVideoFactory(sqlType string) *VideoModel {
 	return &VideoModel{DB: model.UseDbConn(sqlType)}
-}
-
-func (v *VideoModel) VideoDigg(uid, awemeID int64) bool {
-	currentTime := time.Now().Unix()
-	fmt.Println(currentTime)
-	sql := `
-		INSERT INTO tb_diggs (uid, aweme_id, create_time) VALUES (?, ?, ?);`
-	result := v.Exec(sql, uid, awemeID, currentTime)
-	if result.RowsAffected > 0 {
-		return true
-	} else {
-		return false
-	}
 }
 
 func (v *VideoModel) GetMyVideo(Uid, pageNo, pageSize int64) (slice []model.Video, total int64) {

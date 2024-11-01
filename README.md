@@ -47,4 +47,4 @@ go run cmd/web/main.go
 技术交流可以联系我的邮箱 <a href="mailto:fridalongwayhk4@gmail.com">fridalongwayhk4@gmail.com</a>
 
 ## 许可证
-[GPL](LICENSE)
+[MIT](LICENSE)
