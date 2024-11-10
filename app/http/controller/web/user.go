@@ -2,8 +2,10 @@ package web
 
 import (
 	"douyin-backend/app/global/consts"
+	"douyin-backend/app/global/variable"
 	"douyin-backend/app/model/user"
 	"douyin-backend/app/model/video"
+	userstoken "douyin-backend/app/service/users/token"
 	"douyin-backend/app/utils/response"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -14,22 +16,30 @@ type UserController struct {
 }
 
 func (u *UserController) Login(ctx *gin.Context) {
-	var phone = ctx.GetFloat64(consts.ValidatorPrefix + "phone")
-	var password = ctx.Query("password")
-	userIsExist, uid := user.CreateUserFactory("").Login(int64(phone), password)
-	if userIsExist {
-		ctx.JSON(http.StatusOK, gin.H{
-			"isExist": true,
-			"uid":     uid,
-			"msg":     "用户存在",
-		})
+	var phone = ctx.GetString(consts.ValidatorPrefix + "phone")
+	var password = ctx.GetString(consts.ValidatorPrefix + "password")
+	userModel := user.CreateUserFactory("").Login(phone, password)
+	if userModel.UID != 0 {
+		userTokenFactory := userstoken.CreateUserFactory()
+		if userToken, err := userTokenFactory.GenerateToken(userModel.UID, userModel.NickName, userModel.Phone, userModel.Password, variable.ConfigYml.GetInt64("Token.JwtTokenCreatedExpireAt")); err == nil {
+			ctx.JSON(http.StatusOK, gin.H{
+				"isExist": true,
+				"uid":     userModel.UID,
+				"token":   userToken,
+				"msg":     "用户存在",
+			})
+		}
 	} else {
 		ctx.JSON(http.StatusNoContent, gin.H{
 			"isExist": false,
-			"uid":     0,
+			"uid":     userModel.UID,
+			"token":   "",
 			"msg":     "用户不存在",
 		})
 	}
+}
+func (u *UserController) JsonInBlacklist(ctx *gin.Context) {
+	// TODO
 }
 
 func (u *UserController) GetUserInfo(context *gin.Context) {

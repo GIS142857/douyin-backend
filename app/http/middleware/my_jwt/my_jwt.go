@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// 使用工厂创建一个 JWT 结构体
+// CreateMyJWT 使用工厂创建一个 JWT 结构体
 func CreateMyJWT(signKey string) *JwtSign {
 	if len(signKey) <= 0 {
 		signKey = "douyin-backend"

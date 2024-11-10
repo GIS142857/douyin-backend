@@ -13,6 +13,12 @@ func WebRegisterValidator() {
 	containers := container.CreateContainersFactory()
 
 	var key string
+	// jwt
+	{
+		key = consts.ValidatorPrefix + "JsonInBlacklist"
+		containers.Set(key, user.JsonInBlacklist{})
+	}
+
 	// user
 	{
 		key = consts.ValidatorPrefix + "UserLogin"

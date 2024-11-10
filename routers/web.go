@@ -56,9 +56,11 @@ func InitWebRouter() *gin.Engine {
 	//处理静态文件
 	router.Static("/public", "./public")
 
+	//router.Use(authorization.CheckTokenAuth())
+
 	user := router.Group("user/")
 	{
-		user.GET("login", validatorFactory.Create(consts.ValidatorPrefix+"UserLogin"))
+		user.POST("login", validatorFactory.Create(consts.ValidatorPrefix+"UserLogin"))
 		user.GET("userinfo", validatorFactory.Create(consts.ValidatorPrefix+"GetUserInfo"))
 		user.GET("video_list", validatorFactory.Create(consts.ValidatorPrefix+"GetUserVideoList"))
 		user.GET("panel", validatorFactory.Create(consts.ValidatorPrefix+"GetPanel"))
@@ -89,6 +91,11 @@ func InitWebRouter() *gin.Engine {
 		video.GET("recommended", validatorFactory.Create(consts.ValidatorPrefix+"GetVideoRecommended"))
 		video.GET("star", validatorFactory.Create(consts.ValidatorPrefix+"GetStar"))
 		video.GET("long_recommended", validatorFactory.Create(consts.ValidatorPrefix+"GetLongVideoRecommended"))
+	}
+
+	jwt := router.Group("jwt")
+	{
+		jwt.POST("jsonInBlacklist", validatorFactory.Create(consts.ValidatorPrefix+"JsonInBlacklist")) // jwt加入黑名单
 	}
 	return router
 }

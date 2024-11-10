@@ -1,7 +1,7 @@
 package user
 
 type Phone struct {
-	Phone *float64 `form:"phone" json:"phone" binding:"required,min=0"`
+	Phone *string `form:"phone" json:"phone" binding:"required,len=11"`
 }
 
 type Password struct {

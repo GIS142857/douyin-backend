@@ -50,18 +50,18 @@ func CreateUserFactory(sqlType string) *UserModel {
 	return &UserModel{DB: model.UseDbConn(sqlType)}
 }
 
-func (u *UserModel) Login(phone int64, password string) (isExist bool, uid int64) {
-	var account Account
+func (u *UserModel) Login(phone, password string) (account Account) {
 	sql := `
-		SELECT ta.uid, ta.password
+		SELECT ta.uid, ta.nickname, ta.phone, ta.password
 		from tb_accounts as ta
 		where phone=?
 		limit 1;`
 	u.Raw(sql, phone).Find(&account)
 	if account.Password == password {
-		return true, account.UID
+		return
 	} else {
-		return false, 0
+		account.UID = 0
+		return
 	}
 }
 

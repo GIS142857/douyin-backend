@@ -3,10 +3,11 @@ package web
 import (
 	"douyin-backend/app/global/consts"
 	"douyin-backend/app/model/video"
-	"fmt"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/exp/rand"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 type VideoController struct {
@@ -14,9 +15,9 @@ type VideoController struct {
 
 func (v *VideoController) VideoDigg(ctx *gin.Context) {
 	var uid = ctx.GetString(consts.ValidatorPrefix + "uid")
-	var aweme_id = ctx.GetString(consts.ValidatorPrefix + "aweme_id")
+	var awemeId = ctx.GetString(consts.ValidatorPrefix + "aweme_id")
 	var uidInt64, _ = strconv.ParseInt(uid, 10, 64)
-	var awemeIDInt64, _ = strconv.ParseInt(aweme_id, 10, 64)
+	var awemeIDInt64, _ = strconv.ParseInt(awemeId, 10, 64)
 	diggDone := video.CreateDiggFactory("").VideoDigg(uidInt64, awemeIDInt64)
 	if diggDone {
 		ctx.JSON(http.StatusOK, gin.H{
@@ -34,18 +35,18 @@ func (v *VideoController) VideoDigg(ctx *gin.Context) {
 }
 
 func (v *VideoController) VideoComment(ctx *gin.Context) {
-	var ip_location = ctx.GetString(consts.ValidatorPrefix + "ip_location")
-	var aweme_id = ctx.GetString(consts.ValidatorPrefix + "aweme_id")
+	var ipLocation = ctx.GetString(consts.ValidatorPrefix + "ip_location")
+	var awemeId = ctx.GetString(consts.ValidatorPrefix + "aweme_id")
 	var content = ctx.GetString(consts.ValidatorPrefix + "content")
 	var uid = ctx.GetString(consts.ValidatorPrefix + "uid")
-	var short_id = ctx.GetString(consts.ValidatorPrefix + "short_id")
-	var unique_id = ctx.GetString(consts.ValidatorPrefix + "unique_id")
+	var shortId = ctx.GetString(consts.ValidatorPrefix + "short_id")
+	var uniqueId = ctx.GetString(consts.ValidatorPrefix + "unique_id")
 	var signature = ctx.GetString(consts.ValidatorPrefix + "signature")
 	var nickname = ctx.GetString(consts.ValidatorPrefix + "nickname")
 	var avatar = ctx.GetString(consts.ValidatorPrefix + "avatar")
 	var uidInt64, _ = strconv.ParseInt(uid, 10, 64)
-	var awemeIDInt64, _ = strconv.ParseInt(aweme_id, 10, 64)
-	commentDone := video.CreateCommentFactory("").VideoComment(uidInt64, awemeIDInt64, ip_location, content, short_id, unique_id, signature, nickname, avatar)
+	var awemeIDInt64, _ = strconv.ParseInt(awemeId, 10, 64)
+	commentDone := video.CreateCommentFactory("").VideoComment(uidInt64, awemeIDInt64, ipLocation, content, shortId, uniqueId, signature, nickname, avatar)
 	if commentDone {
 		ctx.JSON(http.StatusOK, gin.H{
 			"data": commentDone,
@@ -64,9 +65,9 @@ func (v *VideoController) VideoComment(ctx *gin.Context) {
 
 func (v *VideoController) VideoCollect(ctx *gin.Context) {
 	var uid = ctx.GetString(consts.ValidatorPrefix + "uid")
-	var aweme_id = ctx.GetString(consts.ValidatorPrefix + "aweme_id")
+	var awemeId = ctx.GetString(consts.ValidatorPrefix + "aweme_id")
 	var uidInt64, _ = strconv.ParseInt(uid, 10, 64)
-	var awemeIDInt64, _ = strconv.ParseInt(aweme_id, 10, 64)
+	var awemeIDInt64, _ = strconv.ParseInt(awemeId, 10, 64)
 	diggDone := video.CreateCollectFactory("").VideoCollect(uidInt64, awemeIDInt64)
 	if diggDone {
 		ctx.JSON(http.StatusOK, gin.H{
@@ -85,13 +86,12 @@ func (v *VideoController) VideoCollect(ctx *gin.Context) {
 
 func (v *VideoController) VideoShare(ctx *gin.Context) {
 	var uid = ctx.GetString(consts.ValidatorPrefix + "uid")
-	var aweme_id = ctx.GetString(consts.ValidatorPrefix + "aweme_id")
+	var awemeId = ctx.GetString(consts.ValidatorPrefix + "aweme_id")
 	var message = ctx.GetString(consts.ValidatorPrefix + "message")
-	var share_uid_list = ctx.GetString(consts.ValidatorPrefix + "share_uid_list")
+	var shareUidList = ctx.GetString(consts.ValidatorPrefix + "share_uid_list")
 	var uidInt64, _ = strconv.ParseInt(uid, 10, 64)
-	var awemeIDInt64, _ = strconv.ParseInt(aweme_id, 10, 64)
-	fmt.Println(share_uid_list)
-	shareDone := video.CreateShareFactory("").VideoShare(uidInt64, awemeIDInt64, message, share_uid_list)
+	var awemeIDInt64, _ = strconv.ParseInt(awemeId, 10, 64)
+	shareDone := video.CreateShareFactory("").VideoShare(uidInt64, awemeIDInt64, message, shareUidList)
 	if shareDone {
 		ctx.JSON(http.StatusOK, gin.H{
 			"data": shareDone,
@@ -108,8 +108,8 @@ func (v *VideoController) VideoShare(ctx *gin.Context) {
 }
 
 func (v *VideoController) GetComments(ctx *gin.Context) {
-	aweme_id, _ := strconv.Atoi(ctx.Query("aweme_id"))
-	comments := video.CreateCommentFactory("").GetComments(int64(aweme_id))
+	awemeId, _ := strconv.Atoi(ctx.Query("aweme_id"))
+	comments := video.CreateCommentFactory("").GetComments(int64(awemeId))
 	if len(comments) > 0 {
 		ctx.JSON(http.StatusOK, comments)
 	} else {
@@ -177,7 +177,13 @@ func (v *VideoController) GetVideoRecommended(ctx *gin.Context) {
 	var Start = ctx.GetFloat64(consts.ValidatorPrefix + "start")
 	var PageSize = ctx.GetFloat64(consts.ValidatorPrefix + "pageSize")
 	list, total := video.CreateVideoFactory("").GetVideoRecommended(int64(Uid), int64(Start), int64(PageSize))
+	//fmt.Println(list)
 	if len(list) > 0 {
+		rand.Seed(uint64(time.Now().UnixNano()))
+		// 打乱切片
+		rand.Shuffle(len(list), func(i, j int) {
+			list[i], list[j] = list[j], list[i]
+		})
 		ctx.JSON(http.StatusOK, gin.H{
 			"total": total,
 			"list":  list,

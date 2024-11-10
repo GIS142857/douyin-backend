@@ -4,6 +4,7 @@
     <option name="excludedPackages">
       <array>
         <option value="encoding/json" />
+        <option value="math/rand" />
       </array>
     </option>
   </component>
