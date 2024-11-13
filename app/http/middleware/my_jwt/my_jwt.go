@@ -9,15 +9,12 @@ import (
 
 // CreateMyJWT 使用工厂创建一个 JWT 结构体
 func CreateMyJWT(signKey string) *JwtSign {
-	if len(signKey) <= 0 {
-		signKey = "douyin-backend"
-	}
 	return &JwtSign{
 		[]byte(signKey),
 	}
 }
 
-// 定义一个 JWT验签 结构体
+// JwtSign 定义一个 JWT验签 结构体
 type JwtSign struct {
 	SigningKey []byte
 }

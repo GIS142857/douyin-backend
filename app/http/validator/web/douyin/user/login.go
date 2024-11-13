@@ -14,17 +14,17 @@ type Login struct {
 	Password
 }
 
-func (l Login) CheckParams(context *gin.Context) {
+func (l Login) CheckParams(ctx *gin.Context) {
 	//1.基本的验证规则没有通过
-	if err := context.ShouldBind(&l); err != nil {
-		response.ValidatorError(context, err)
+	if err := ctx.ShouldBind(&l); err != nil {
+		response.ValidatorError(ctx, err)
 		return
 	}
-	fmt.Println(context.ClientIP())
+	fmt.Println(ctx.ClientIP())
 	//  该函数主要是将本结构体的字段（成员）按照 consts.ValidatorPrefix+ json标签对应的 键 => 值 形式直接传递给下一步（控制器）
-	extraAddBindDataContext := data_transfer.DataAddContext(l, consts.ValidatorPrefix, context)
+	extraAddBindDataContext := data_transfer.DataAddContext(l, consts.ValidatorPrefix, ctx)
 	if extraAddBindDataContext == nil {
-		response.ErrorSystem(context, "user_login 表单验证器json化失败", "")
+		response.ErrorSystem(ctx, "user_login 表单验证器json化失败", "")
 	} else {
 		// 验证完成，调用控制器，写具体业务逻辑
 		(&web.UserController{}).Login(extraAddBindDataContext)

@@ -3,6 +3,7 @@ package routers
 import (
 	"douyin-backend/app/global/consts"
 	"douyin-backend/app/global/variable"
+	"douyin-backend/app/http/middleware/authorization"
 	"douyin-backend/app/http/middleware/cors"
 	validatorFactory "douyin-backend/app/http/validator/core/factory"
 	"douyin-backend/app/utils/gin_release"
@@ -55,12 +56,14 @@ func InitWebRouter() *gin.Engine {
 
 	//处理静态文件
 	router.Static("/public", "./public")
+	auth := router.Group("base/")
+	{
+		auth.POST("login", validatorFactory.Create(consts.ValidatorPrefix+"Login"))
+	}
 
-	//router.Use(authorization.CheckTokenAuth())
-
+	router.Use(authorization.CheckTokenAuth())
 	user := router.Group("user/")
 	{
-		user.POST("login", validatorFactory.Create(consts.ValidatorPrefix+"UserLogin"))
 		user.GET("userinfo", validatorFactory.Create(consts.ValidatorPrefix+"GetUserInfo"))
 		user.GET("video_list", validatorFactory.Create(consts.ValidatorPrefix+"GetUserVideoList"))
 		user.GET("panel", validatorFactory.Create(consts.ValidatorPrefix+"GetPanel"))

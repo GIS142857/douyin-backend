@@ -9,7 +9,6 @@ import (
 )
 
 type VideoCollect struct {
-	Uid
 	AwemeID
 }
 

@@ -9,7 +9,6 @@ import (
 )
 
 type GetShopRecommended struct {
-	Uid
 	PageNo
 	PageSize
 }

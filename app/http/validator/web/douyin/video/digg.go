@@ -9,7 +9,6 @@ import (
 )
 
 type VideoDigg struct {
-	Uid
 	AwemeID
 }
 

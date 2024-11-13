@@ -9,7 +9,6 @@ import (
 )
 
 type GetVideoRecommended struct {
-	//Uid
 	Start
 	PageSize
 }

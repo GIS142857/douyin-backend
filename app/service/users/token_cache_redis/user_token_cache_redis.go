@@ -10,12 +10,12 @@ import (
 	"time"
 )
 
-func CreateUsersTokenCacheFactory(userId int64) *userTokenCacheRedis {
+func CreateUsersTokenCacheFactory(uid int64) *userTokenCacheRedis {
 	redCli := redis_factory.GetOneRedisClient()
 	if redCli == nil {
 		return nil
 	}
-	return &userTokenCacheRedis{redisClient: redCli, userTokenKey: "token_userid_" + strconv.FormatInt(userId, 10)}
+	return &userTokenCacheRedis{redisClient: redCli, userTokenKey: "token_userid_" + strconv.FormatInt(uid, 10)}
 }
 
 type userTokenCacheRedis struct {

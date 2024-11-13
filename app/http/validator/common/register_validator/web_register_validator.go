@@ -19,11 +19,14 @@ func WebRegisterValidator() {
 		containers.Set(key, user.JsonInBlacklist{})
 	}
 
+	// base
+	{
+		key = consts.ValidatorPrefix + "Login"
+		containers.Set(key, user.Login{})
+	}
+
 	// user
 	{
-		key = consts.ValidatorPrefix + "UserLogin"
-		containers.Set(key, user.Login{})
-
 		key = consts.ValidatorPrefix + "GetUserInfo"
 		containers.Set(key, user.GetUserInfo{})
 
