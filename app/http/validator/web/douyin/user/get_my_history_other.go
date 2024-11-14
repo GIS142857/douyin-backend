@@ -9,7 +9,6 @@ import (
 )
 
 type GetMyHistoryOther struct {
-	Uid
 	PageNo
 	PageSize
 }

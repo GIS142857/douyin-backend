@@ -9,7 +9,6 @@ import (
 )
 
 type GetMyCollectVideo struct {
-	Uid
 	PageNo
 	PageSize
 }

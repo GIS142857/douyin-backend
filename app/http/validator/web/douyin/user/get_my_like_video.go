@@ -9,7 +9,6 @@ import (
 )
 
 type GetMyLikeVideo struct {
-	Uid
 	PageNo
 	PageSize
 }
