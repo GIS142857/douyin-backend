@@ -61,7 +61,6 @@ func (u *UserModel) Login(phone, password string) (account Account) {
 		limit 1;`
 	u.Raw(sql, phone).Find(&account)
 	if account.Password == password {
-		fmt.Println(account)
 		return
 	} else {
 		account.UID = 0
@@ -118,7 +117,6 @@ func (u *UserModel) OauthLoginToken(uid int64, token string, expiresAt int64, cl
 			SELECT ?, 'login', ?, ?, ?, ? FROM DUAL WHERE NOT EXISTS(SELECT 1 FROM tb_auth_access_tokens a WHERE a.uid=? AND a.action_name='login' AND a.token=?)
 			`
 	createdAt := time.Now().Unix()
-	fmt.Println(createdAt)
 	if u.Exec(sql, uid, token, createdAt, expiresAt, clientIp, uid, token).Error == nil {
 		// 异步缓存用户有效的token到redis
 		if variable.ConfigYml.GetInt("Token.IsCacheToRedis") == 1 {

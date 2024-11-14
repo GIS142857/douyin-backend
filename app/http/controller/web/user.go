@@ -24,7 +24,6 @@ func (u *UserController) Login(ctx *gin.Context) {
 	if userModel.UID != 0 {
 		userTokenFactory := userstoken.CreateUserFactory()
 		if userToken, err := userTokenFactory.GenerateToken(userModel.UID, userModel.Nickname, userModel.Phone, variable.ConfigYml.GetInt64("Token.JwtTokenCreatedExpireAt")); err == nil {
-			fmt.Println(userTokenFactory.ParseToken(userToken))
 			if userTokenFactory.RecordLoginToken(userToken, ctx.ClientIP()) {
 				ctx.JSON(http.StatusOK, gin.H{
 					"isExist": true,

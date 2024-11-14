@@ -9,7 +9,6 @@ import (
 )
 
 type GetLongVideoRecommended struct {
-	Uid
 	PageNo
 	PageSize
 }

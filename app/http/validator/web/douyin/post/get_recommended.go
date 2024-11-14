@@ -9,7 +9,6 @@ import (
 )
 
 type GetPostRecommended struct {
-	Uid
 	PageNo
 	PageSize
 }
