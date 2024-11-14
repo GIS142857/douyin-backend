@@ -5,7 +5,6 @@ import (
 	"douyin-backend/app/http/controller/web"
 	"douyin-backend/app/http/validator/core/data_transfer"
 	"douyin-backend/app/utils/response"
-	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,7 +19,6 @@ func (l Login) CheckParams(ctx *gin.Context) {
 		response.ValidatorError(ctx, err)
 		return
 	}
-	fmt.Println(ctx.ClientIP())
 	//  该函数主要是将本结构体的字段（成员）按照 consts.ValidatorPrefix+ json标签对应的 键 => 值 形式直接传递给下一步（控制器）
 	extraAddBindDataContext := data_transfer.DataAddContext(l, consts.ValidatorPrefix, ctx)
 	if extraAddBindDataContext == nil {

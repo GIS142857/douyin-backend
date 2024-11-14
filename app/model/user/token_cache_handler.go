@@ -3,7 +3,6 @@ package user
 import (
 	"douyin-backend/app/global/variable"
 	"douyin-backend/app/service/users/token_cache_redis"
-	"fmt"
 )
 
 // 本文件专门处理 token 缓存到 redis 的相关逻辑
@@ -30,7 +29,6 @@ func (u *UserModel) ValidTokenCacheToRedis(uid int64) {
 		for i := 1; rows.Next(); i++ {
 			err = rows.Scan(&tempToken, &expiresAt)
 			if err == nil {
-				fmt.Println(tempToken, expiresAt)
 				tokenCacheRedisFactory.SetTokenCache(expiresAt, tempToken)
 				// 因为每个用户的token是按照过期时间倒叙排列的，第一个是有效期最长的，将该用户的总键设置一个最大过期时间，到期则自动清理，避免不必要的数据残留
 				if i == 1 {

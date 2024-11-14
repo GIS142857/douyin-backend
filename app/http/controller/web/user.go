@@ -8,7 +8,6 @@ import (
 	userstoken "douyin-backend/app/service/users/token"
 	"douyin-backend/app/utils/auth"
 	"douyin-backend/app/utils/response"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -34,7 +33,7 @@ func (u *UserController) Login(ctx *gin.Context) {
 			}
 
 		} else {
-			fmt.Println("生成token出错：", err.Error())
+			variable.ZapLog.Error("生成token出错!")
 		}
 	} else {
 		ctx.JSON(http.StatusNoContent, gin.H{

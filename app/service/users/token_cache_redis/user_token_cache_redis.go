@@ -4,7 +4,6 @@ import (
 	"douyin-backend/app/global/variable"
 	"douyin-backend/app/utils/md5_encrypt"
 	"douyin-backend/app/utils/redis_factory"
-	"fmt"
 	"go.uber.org/zap"
 	"strconv"
 	"strings"
@@ -27,7 +26,6 @@ type userTokenCacheRedis struct {
 // SetTokenCache 设置缓存
 func (u *userTokenCacheRedis) SetTokenCache(tokenExpire int64, token string) bool {
 	// 存储用户token时转为MD5，下一步比较的时候可以更加快速地比较是否一致
-	fmt.Println(u.userTokenKey, tokenExpire, md5_encrypt.MD5(token))
 	if _, err := u.redisClient.Int(u.redisClient.Execute("zAdd", u.userTokenKey, tokenExpire, md5_encrypt.MD5(token))); err == nil {
 		return true
 	}
