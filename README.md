@@ -42,6 +42,13 @@ go run cmd/web/main.go
 ## 用法
 由于取消了前端的请求拦截以及将前端的部分代码做了修改，所以需要使用我修改过的前端代码进行部署，修改版的前端代码我放在了 frontend 目录，在使用时替换掉对应的 src 文件夹。
 
+目前项目已经部署上线，访问 http://117.50.163.130:3000/login/password 
+
+使用下面用户名和密码登录体验：
+
+phone: 19911215546 (非真实电话号码)
+password: 00000000
+
 ## 技术交流
 目前项目还需补充更多功能，欢迎提交 `PR`，非常感谢你对我们的支持！
 技术交流可以联系我的邮箱 <a href="mailto:fridalongwayhk4@gmail.com">fridalongwayhk4@gmail.com</a>
