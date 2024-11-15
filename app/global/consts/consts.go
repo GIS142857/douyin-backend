@@ -44,6 +44,7 @@ const (
 	CurdSelectFailMsg        string = "查询无数据"
 	CurdRegisterFailCode     int    = -400204
 	CurdRegisterFailMsg      string = "注册失败"
+	CurdRegisterOkMsg        string = "注册成功"
 	CurdLoginFailCode        int    = -400205
 	CurdLoginFailMsg         string = "登录失败"
 	CurdRefreshTokenFailCode int    = -400206

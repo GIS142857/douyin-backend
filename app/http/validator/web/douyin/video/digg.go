@@ -10,6 +10,7 @@ import (
 
 type VideoDigg struct {
 	AwemeID
+	Action
 }
 
 func (v VideoDigg) CheckParams(context *gin.Context) {

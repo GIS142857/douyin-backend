@@ -18,11 +18,16 @@ func CreateCollectFactory(sqlType string) *CollectModel {
 	return &CollectModel{DB: model.UseDbConn(sqlType)}
 }
 
-func (c *CollectModel) VideoCollect(uid, awemeID int64) bool {
+func (c *CollectModel) VideoCollect(uid, awemeID int64, action bool) bool {
 	currentTime := time.Now().Unix()
-	sql := `
-		INSERT INTO tb_collects (uid, aweme_id, create_time) VALUES (?, ?, ?);`
-	result := c.Exec(sql, uid, awemeID, currentTime)
+	collectSql := `INSERT INTO tb_collects (uid, aweme_id, create_time) VALUES (?, ?, ?);`
+	uncollectSql := `DELETE FROM tb_collects WHERE uid=? and aweme_id=?;`
+	var result *gorm.DB
+	if action {
+		result = c.Exec(collectSql, uid, awemeID, currentTime)
+	} else {
+		result = c.Exec(uncollectSql, uid, awemeID)
+	}
 	if result.RowsAffected > 0 {
 		return true
 	} else {

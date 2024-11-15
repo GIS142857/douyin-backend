@@ -7,6 +7,7 @@ import (
 	"douyin-backend/app/model/video"
 	userstoken "douyin-backend/app/service/users/token"
 	"douyin-backend/app/utils/auth"
+	"douyin-backend/app/utils/md5_encrypt"
 	"douyin-backend/app/utils/response"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -14,6 +15,17 @@ import (
 )
 
 type UserController struct {
+}
+
+func (u *UserController) Register(ctx *gin.Context) {
+	var phone = ctx.GetString(consts.ValidatorPrefix + "phone")
+	var password = ctx.GetString(consts.ValidatorPrefix + "password")
+	var userIp = ctx.ClientIP()
+	if user.CreateUserFactory("").Register(phone, md5_encrypt.Base64Md5(password), userIp) {
+		response.Success(ctx, consts.CurdStatusOkMsg, consts.CurdRegisterOkMsg)
+	} else {
+		response.Fail(ctx, consts.CurdRegisterFailCode, consts.CurdRegisterFailMsg, "")
+	}
 }
 
 func (u *UserController) Login(ctx *gin.Context) {

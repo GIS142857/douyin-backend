@@ -1,5 +1,9 @@
 package user
 
+type Nickname struct {
+	Nickname *string `form:"nickname" json:"nickname" binding:"required"`
+}
+
 type Phone struct {
 	Phone *string `form:"phone" json:"phone" binding:"required,len=11"`
 }

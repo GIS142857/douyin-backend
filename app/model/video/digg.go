@@ -18,11 +18,17 @@ func CreateDiggFactory(sqlType string) *DiggModel {
 	return &DiggModel{DB: model.UseDbConn(sqlType)}
 }
 
-func (v *DiggModel) VideoDigg(uid, awemeID int64) bool {
+func (v *DiggModel) VideoDigg(uid, awemeID int64, action bool) bool {
 	currentTime := time.Now().Unix()
-	sql := `
-		INSERT INTO tb_diggs (uid, aweme_id, create_time) VALUES (?, ?, ?);`
-	result := v.Exec(sql, uid, awemeID, currentTime)
+	diggSql := `INSERT INTO tb_diggs (uid, aweme_id, create_time) VALUES (?, ?, ?);`
+	undiggSql := `DELETE FROM tb_diggs WHERE uid = ? AND aweme_id = ?;`
+	var result *gorm.DB
+	if action {
+		result = v.Exec(diggSql, uid, awemeID, currentTime)
+	} else {
+		result = v.Exec(undiggSql, uid, awemeID)
+	}
+
 	if result.RowsAffected > 0 {
 		return true
 	} else {

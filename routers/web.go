@@ -58,6 +58,7 @@ func InitWebRouter() *gin.Engine {
 	router.Static("/public", "./public")
 	auth := router.Group("base/")
 	{
+		auth.POST("register", validatorFactory.Create(consts.ValidatorPrefix+"Register"))
 		auth.POST("login", validatorFactory.Create(consts.ValidatorPrefix+"Login"))
 	}
 

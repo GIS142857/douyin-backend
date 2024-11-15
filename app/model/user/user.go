@@ -3,6 +3,7 @@ package user
 import (
 	"douyin-backend/app/global/variable"
 	"douyin-backend/app/model"
+	"douyin-backend/app/utils/md5_encrypt"
 	"encoding/json"
 	"fmt"
 	"gorm.io/gorm"
@@ -53,6 +54,17 @@ func CreateUserFactory(sqlType string) *UserModel {
 	return &UserModel{DB: model.UseDbConn(sqlType)}
 }
 
+func (u *UserModel) Register(phone, password, userIp string) bool {
+	sql := `INSERT INTO tb_accounts(phone, password, last_login_ip, create_time) SELECT ?, ?, ?, ? FROM DUAL WHERE NOT EXISTS(SELECT 1 FROM tb_accounts WHERE phone=?)`
+	var createTime = time.Now().Unix()
+	result := u.Exec(sql, phone, password, userIp, createTime)
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
 func (u *UserModel) Login(phone, password string) (account Account) {
 	sql := `
 		SELECT ta.uid, ta.nickname, ta.phone, ta.password
@@ -60,7 +72,7 @@ func (u *UserModel) Login(phone, password string) (account Account) {
 		where phone=?
 		limit 1;`
 	u.Raw(sql, phone).Find(&account)
-	if account.Password == password {
+	if account.Password == md5_encrypt.Base64Md5(password) {
 		return
 	} else {
 		account.UID = 0

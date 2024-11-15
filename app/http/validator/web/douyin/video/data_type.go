@@ -32,6 +32,10 @@ type AwemeID struct {
 	AwemeID *string `form:"aweme_id" json:"aweme_id" binding:"required,numeric"`
 }
 
+type Action struct {
+	Action *bool `form:"action" json:"action" binding:"required"`
+}
+
 type Content struct {
 	Content *string `form:"content" json:"content" binding:"required"`
 }

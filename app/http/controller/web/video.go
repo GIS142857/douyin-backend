@@ -17,20 +17,37 @@ type VideoController struct {
 func (v *VideoController) VideoDigg(ctx *gin.Context) {
 	var uid = auth.GetUidFromToken(ctx)
 	var awemeId = ctx.GetString(consts.ValidatorPrefix + "aweme_id")
+	var action = ctx.GetBool(consts.ValidatorPrefix + "action")
 	var awemeIDInt64, _ = strconv.ParseInt(awemeId, 10, 64)
-	diggDone := video.CreateDiggFactory("").VideoDigg(uid, awemeIDInt64)
-	if diggDone {
-		ctx.JSON(http.StatusOK, gin.H{
-			"data": diggDone,
-			"code": consts.CurdStatusOkCode,
-			"msg":  "点赞成功",
-		})
+	actionStatus := video.CreateDiggFactory("").VideoDigg(uid, awemeIDInt64, action)
+	if actionStatus {
+		if action {
+			ctx.JSON(http.StatusOK, gin.H{
+				"data": actionStatus,
+				"code": consts.CurdStatusOkCode,
+				"msg":  "点赞成功",
+			})
+		} else {
+			ctx.JSON(http.StatusOK, gin.H{
+				"data": actionStatus,
+				"code": consts.CurdStatusOkCode,
+				"msg":  "取消点赞成功",
+			})
+		}
 	} else {
-		ctx.JSON(http.StatusForbidden, gin.H{
-			"data": diggDone,
-			"code": consts.CurdCreatFailCode,
-			"msg":  "点赞失败",
-		})
+		if action {
+			ctx.JSON(http.StatusForbidden, gin.H{
+				"data": actionStatus,
+				"code": consts.CurdCreatFailCode,
+				"msg":  "点赞失败",
+			})
+		} else {
+			ctx.JSON(http.StatusForbidden, gin.H{
+				"data": actionStatus,
+				"code": consts.CurdCreatFailCode,
+				"msg":  "取消点赞失败",
+			})
+		}
 	}
 }
 
@@ -65,20 +82,37 @@ func (v *VideoController) VideoComment(ctx *gin.Context) {
 func (v *VideoController) VideoCollect(ctx *gin.Context) {
 	var uid = auth.GetUidFromToken(ctx)
 	var awemeId = ctx.GetString(consts.ValidatorPrefix + "aweme_id")
+	var action = ctx.GetBool(consts.ValidatorPrefix + "action")
 	var awemeIDInt64, _ = strconv.ParseInt(awemeId, 10, 64)
-	diggDone := video.CreateCollectFactory("").VideoCollect(uid, awemeIDInt64)
-	if diggDone {
-		ctx.JSON(http.StatusOK, gin.H{
-			"data": diggDone,
-			"code": consts.CurdStatusOkCode,
-			"msg":  "收藏成功",
-		})
+	actionStatus := video.CreateCollectFactory("").VideoCollect(uid, awemeIDInt64, action)
+	if actionStatus {
+		if action {
+			ctx.JSON(http.StatusOK, gin.H{
+				"data": actionStatus,
+				"code": consts.CurdStatusOkCode,
+				"msg":  "收藏成功",
+			})
+		} else {
+			ctx.JSON(http.StatusOK, gin.H{
+				"data": actionStatus,
+				"code": consts.CurdStatusOkCode,
+				"msg":  "取消收藏成功",
+			})
+		}
 	} else {
-		ctx.JSON(http.StatusForbidden, gin.H{
-			"data": diggDone,
-			"code": consts.CurdCreatFailCode,
-			"msg":  "收藏失败",
-		})
+		if action {
+			ctx.JSON(http.StatusForbidden, gin.H{
+				"data": actionStatus,
+				"code": consts.CurdCreatFailCode,
+				"msg":  "收藏失败",
+			})
+		} else {
+			ctx.JSON(http.StatusForbidden, gin.H{
+				"data": actionStatus,
+				"code": consts.CurdCreatFailCode,
+				"msg":  "取消收藏失败",
+			})
+		}
 	}
 }
 

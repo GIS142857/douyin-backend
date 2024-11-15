@@ -23,6 +23,9 @@ func WebRegisterValidator() {
 	{
 		key = consts.ValidatorPrefix + "Login"
 		containers.Set(key, user.Login{})
+
+		key = consts.ValidatorPrefix + "Register"
+		containers.Set(key, user.Register{})
 	}
 
 	// user
