@@ -53,5 +53,8 @@ password: 00000000
 目前项目还需补充更多功能，欢迎提交 `PR`，非常感谢你对我们的支持！
 技术交流可以联系我的邮箱 <a href="mailto:fridalongwayhk4@gmail.com">fridalongwayhk4@gmail.com</a>
 
+## 注意事项
+注意：本项目仅适用于学习和研究，不得用于商业使用
+
 ## 许可证
 [MIT](LICENSE)
