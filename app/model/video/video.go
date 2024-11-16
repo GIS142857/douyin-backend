@@ -4,7 +4,9 @@ import (
 	"douyin-backend/app/global/variable"
 	"douyin-backend/app/model"
 	"github.com/goccy/go-json"
+	"golang.org/x/exp/rand"
 	"gorm.io/gorm"
+	"time"
 )
 
 type VideoModel struct {
@@ -770,9 +772,15 @@ func (v *VideoModel) GetVideoRecommended(Uid, start, pageSize int64) (slice []mo
 		WHERE JSON_EXTRACT(status, '$.private_status') = 0
 		`
 
-	offset := start * pageSize
+	//offset := start * pageSize
 	v.Raw(sql2).Count(&total)
-	v.Raw(sql1, pageSize, offset).Find(&slice)
+	if total <= pageSize {
+		variable.ZapLog.Error("GetVideoRecommended 可用数据少于 pageSize!")
+		return
+	}
+	rand.Seed(uint64(time.Now().UnixNano()))
+	randomStart := rand.Intn(int(total - pageSize + 1))
+	v.Raw(sql1, pageSize, randomStart).Find(&slice)
 
 	if len(slice) > 0 {
 		return
