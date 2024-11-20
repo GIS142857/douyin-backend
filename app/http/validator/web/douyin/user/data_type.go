@@ -23,3 +23,11 @@ type PageNo struct {
 type PageSize struct {
 	PageSize *float64 `form:"pageSize" json:"pageSize" binding:"required,min=0"`
 }
+
+type Action struct {
+	Action *bool `form:"action" json:"action" binding:"required"`
+}
+
+type FollowingId struct {
+	FollowingId *string `form:" binging" json:"following_id" binding:"required"`
+}

@@ -4,6 +4,7 @@ import (
 	"douyin-backend/app/global/variable"
 	"douyin-backend/app/model"
 	"github.com/goccy/go-json"
+	"go.uber.org/zap"
 	"golang.org/x/exp/rand"
 	"gorm.io/gorm"
 	"time"
@@ -39,7 +40,7 @@ func CreateVideoFactory(sqlType string) *VideoModel {
 	return &VideoModel{DB: model.UseDbConn(sqlType)}
 }
 
-func (v *VideoModel) GetMyVideo(Uid, pageNo, pageSize int64) (slice []model.Video, total int64) {
+func (v *VideoModel) GetMyVideo(Uid, pageNo, pageSize int64) (slice []model.Video, total int64, ok bool) {
 	sql1 := `
 		SELECT 
 			a.aweme_id,
@@ -149,18 +150,18 @@ func (v *VideoModel) GetMyVideo(Uid, pageNo, pageSize int64) (slice []model.Vide
 		`
 
 	offset := pageNo * pageSize
-	v.Raw(sql2, Uid).Count(&total)
-	v.Raw(sql1, Uid, pageSize, offset).Find(&slice)
-
-	if len(slice) > 0 {
-		return
-	} else {
-		variable.ZapLog.Error("GetVideoMy 查询出错!")
+	result1 := v.Raw(sql2, Uid).Count(&total)
+	result2 := v.Raw(sql1, Uid, pageSize, offset).Find(&slice)
+	if result1.Error != nil || result2.Error != nil {
+		variable.ZapLog.Error("GetMyVideo SQL执行出错!")
+		ok = false
 		return
 	}
+	ok = true
+	return
 }
 
-func (v *VideoModel) GetMyPrivateVideo(Uid, pageNo, pageSize int64) (slice []model.Video, total int64) {
+func (v *VideoModel) GetMyPrivateVideo(Uid, pageNo, pageSize int64) (slice []model.Video, total int64, ok bool) {
 	sql1 := `
 		SELECT 
 			a.aweme_id,
@@ -266,18 +267,18 @@ func (v *VideoModel) GetMyPrivateVideo(Uid, pageNo, pageSize int64) (slice []mod
 		`
 
 	offset := pageNo * pageSize
-	v.Raw(sql2, Uid).Count(&total)
-	v.Raw(sql1, Uid, pageSize, offset).Find(&slice)
-
-	if len(slice) > 0 {
-		return
-	} else {
-		variable.ZapLog.Error("GetVideoPrivate 查询出错!")
+	result1 := v.Raw(sql2, Uid).Count(&total)
+	result2 := v.Raw(sql1, Uid, pageSize, offset).Find(&slice)
+	if result1.Error != nil || result2.Error != nil {
+		variable.ZapLog.Error("GetMyPrivateVideo SQL执行出错!")
+		ok = false
 		return
 	}
+	ok = true
+	return
 }
 
-func (v *VideoModel) GetMyLikeVideo(Uid, pageNo, pageSize int64) (slice []model.Video, total int64) {
+func (v *VideoModel) GetMyLikeVideo(Uid, pageNo, pageSize int64) (slice []model.Video, total int64, ok bool) {
 	sql1 := `
 		SELECT 
 			a.aweme_id,
@@ -396,16 +397,18 @@ func (v *VideoModel) GetMyLikeVideo(Uid, pageNo, pageSize int64) (slice []model.
 		`
 
 	offset := pageNo * pageSize
-	// 查询总记录数
-	v.Raw(sql2, Uid).Scan(&total)
-
-	// 查询点赞视频列表
-	v.Raw(sql1, Uid, pageSize, offset).Find(&slice)
-
+	result1 := v.Raw(sql2, Uid).Count(&total)
+	result2 := v.Raw(sql1, Uid, pageSize, offset).Find(&slice)
+	if result1.Error != nil || result2.Error != nil {
+		variable.ZapLog.Error("GetMyLikeVideo SQL执行出错!")
+		ok = false
+		return
+	}
+	ok = true
 	return
 }
 
-func (v *VideoModel) GetMyCollectVideo(Uid, pageNo, pageSize int64) (slice []model.Video, total int64) {
+func (v *VideoModel) GetMyCollectVideo(Uid, pageNo, pageSize int64) (slice []model.Video, total int64, ok bool) {
 	sql1 := `
 		SELECT 
 			a.aweme_id,
@@ -524,16 +527,18 @@ func (v *VideoModel) GetMyCollectVideo(Uid, pageNo, pageSize int64) (slice []mod
 		`
 
 	offset := pageNo * pageSize
-	// 查询总记录数
-	v.Raw(sql2, Uid).Scan(&total)
-
-	// 查询点赞视频列表
-	v.Raw(sql1, Uid, pageSize, offset).Find(&slice)
-
+	result1 := v.Raw(sql2, Uid).Count(&total)
+	result2 := v.Raw(sql1, Uid, pageSize, offset).Find(&slice)
+	if result1.Error != nil || result2.Error != nil {
+		variable.ZapLog.Error("GetMyCollectVideo SQL执行出错!")
+		ok = false
+		return
+	}
+	ok = true
 	return
 }
 
-func (v *VideoModel) GetMyHistoryVideo(Uid, pageNo, pageSize int64) (slice []model.Video, total int64) {
+func (v *VideoModel) GetMyHistoryVideo(Uid, pageNo, pageSize int64) (slice []model.Video, total int64, ok bool) {
 	sql1 := `
 		SELECT 
 			a.aweme_id,
@@ -652,12 +657,14 @@ func (v *VideoModel) GetMyHistoryVideo(Uid, pageNo, pageSize int64) (slice []mod
 		`
 
 	offset := pageNo * pageSize
-	// 查询总记录数
-	v.Raw(sql2, Uid).Scan(&total)
-
-	// 查询观看的视频列表
-	v.Raw(sql1, Uid, pageSize, offset).Find(&slice)
-
+	result1 := v.Raw(sql2, Uid).Count(&total)
+	result2 := v.Raw(sql1, Uid, pageSize, offset).Find(&slice)
+	if result1.Error != nil || result2.Error != nil {
+		variable.ZapLog.Error("GetMyHistoryVideo SQL执行出错!")
+		ok = false
+		return
+	}
+	ok = true
 	return
 }
 
@@ -665,7 +672,7 @@ func (v *VideoModel) GetMyHistoryOther(Uid, pageNo, pageSize int64) {
 	return
 }
 
-func (v *VideoModel) GetVideoRecommended(Uid, start, pageSize int64) (slice []model.Video, total int64) {
+func (v *VideoModel) GetVideoRecommended(Uid, start, pageSize int64) (slice []model.Video, total int64, ok bool) {
 	sql1 := `
 		SELECT 
 			a.aweme_id,
@@ -773,24 +780,25 @@ func (v *VideoModel) GetVideoRecommended(Uid, start, pageSize int64) (slice []mo
 		`
 
 	//offset := start * pageSize
-	v.Raw(sql2).Count(&total)
+	result1 := v.Raw(sql2).Count(&total)
 	if total <= pageSize {
 		variable.ZapLog.Error("GetVideoRecommended 可用数据少于 pageSize!")
 		return
 	}
 	rand.Seed(uint64(time.Now().UnixNano()))
 	randomStart := rand.Intn(int(total - pageSize + 1))
-	v.Raw(sql1, pageSize, randomStart).Find(&slice)
+	result2 := v.Raw(sql1, pageSize, randomStart).Find(&slice)
 
-	if len(slice) > 0 {
-		return
-	} else {
-		variable.ZapLog.Error("GetVideoRecommended 查询出错!")
+	if result1.Error != nil || result2.Error != nil {
+		variable.ZapLog.Error("GetVideoRecommended SQL执行出错!")
+		ok = false
 		return
 	}
+	ok = true
+	return
 }
 
-func (v *VideoModel) GetLongVideoRecommended(Uid, PageNo, pageSize int64) (slice []model.Video, total int64) {
+func (v *VideoModel) GetLongVideoRecommended(Uid, PageNo, pageSize int64) (slice []model.Video, total int64, ok bool) {
 	sql1 := `
 		SELECT 
 			a.aweme_id,
@@ -898,18 +906,19 @@ func (v *VideoModel) GetLongVideoRecommended(Uid, PageNo, pageSize int64) (slice
 		`
 
 	offset := PageNo * pageSize
-	v.Raw(sql2).Count(&total)
-	v.Raw(sql1, pageSize, offset).Find(&slice)
+	result1 := v.Raw(sql2).Count(&total)
+	result2 := v.Raw(sql1, pageSize, offset).Find(&slice)
 
-	if len(slice) > 0 {
-		return
-	} else {
-		variable.ZapLog.Error("GetVideoRecommended 查询出错!")
+	if result1.Error != nil || result2.Error != nil {
+		variable.ZapLog.Error("GetLongVideoRecommended SQL执行出错!")
+		ok = false
 		return
 	}
+	ok = true
+	return
 }
 
-func (v *VideoModel) GetUserVideoList(Uid int64) (slice []model.Video) {
+func (v *VideoModel) GetUserVideoList(Uid int64) (slice []model.Video, ok bool) {
 	sql1 := `
 		SELECT 
 			a.aweme_id,
@@ -1009,6 +1018,12 @@ func (v *VideoModel) GetUserVideoList(Uid int64) (slice []model.Video) {
 		WHERE a.author_user_id = ? 
 			AND JSON_EXTRACT(a.status, '$.private_status') = 0
 		ORDER BY a.is_top DESC, a.create_time DESC;`
-	v.Raw(sql1, Uid).Find(&slice)
+	result := v.Raw(sql1, Uid).Find(&slice)
+	if result.Error != nil {
+		variable.ZapLog.Error("GetUserVideoList SQL执行出错!", zap.Error(result.Error))
+		ok = false
+		return
+	}
+	ok = true
 	return
 }

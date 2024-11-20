@@ -6,6 +6,7 @@ import (
 	"douyin-backend/app/utils/md5_encrypt"
 	"encoding/json"
 	"fmt"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"time"
 )
@@ -65,37 +66,128 @@ func (u *UserModel) Register(phone, password, userIp string) bool {
 	}
 }
 
-func (u *UserModel) Login(phone, password string) (account Account) {
+func (u *UserModel) Login(phone, password string) (account Account, ok bool) {
 	sql := `
 		SELECT ta.uid, ta.nickname, ta.phone, ta.password
 		from tb_accounts as ta
 		where phone=?
 		limit 1;`
-	u.Raw(sql, phone).Find(&account)
+	result := u.Raw(sql, phone).Find(&account)
+	if result.Error != nil {
+		variable.ZapLog.Error("Login SQL代码执行出错!", zap.Error(result.Error))
+		ok = false
+		return
+	}
 	if account.Password == md5_encrypt.Base64Md5(password) {
-		return
+		ok = true
 	} else {
-		account.UID = 0
-		return
+		ok = false
+	}
+	return
+}
+
+func (u *UserModel) Attention(uid, followingId int64, action bool) bool {
+	currentTime := time.Now().Unix()
+	attentionSql := `INSERT INTO tb_relations (follower_id, following_id, create_time) VALUES (?, ?, ?);`
+	unattentionSql := `DELETE FROM tb_relations WHERE follower_id=? and following_id=?;`
+	var result *gorm.DB
+	if action {
+		result = u.Exec(attentionSql, uid, followingId, currentTime)
+	} else {
+		result = u.Exec(unattentionSql, uid, followingId)
+	}
+	if result.Error != nil {
+		variable.ZapLog.Error("Attention SQL执行出错!", zap.Error(result.Error))
+	}
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
 	}
 }
 
-func (u *UserModel) GetPanel(uid int64) (userinfo model.User) {
+func (u *UserModel) AwemeStatus(uid int64) (awemeStatus AwemeStatusModel, success bool) {
+	attentionSql := `SELECT following_id FROM tb_relations WHERE follower_id=?`
+	diggSql := `SELECT aweme_id FROM tb_diggs WHERE uid=?`
+	collectSql := `SELECT aweme_id FROM tb_collects WHERE uid=?`
+	u.Raw(attentionSql, uid).Find(&awemeStatus.Attentions)
+	u.Raw(diggSql, uid).Find(&awemeStatus.Likes)
+	u.Raw(collectSql, uid).Find(&awemeStatus.Collects)
+	return awemeStatus, true
+}
+
+func (u *UserModel) GetPanel(uid int64) (userinfo model.User, ok bool) {
 	sql := `
 		SELECT *
 		from tb_users as tu
 		where uid=?
 		limit 1;`
-	u.Raw(sql, uid).Find(&userinfo)
+	result := u.Raw(sql, uid).Find(&userinfo)
+	if result.Error != nil {
+		variable.ZapLog.Error("GetPanel SQL执行出错!", zap.Error(result.Error))
+		ok = false
+		return
+	}
+	ok = true
 	return
 }
 
-func (u *UserModel) GetFriends(uid int64) (userinfo []model.User) {
+func (u *UserModel) GetFriends(uid int64) (userinfo []model.User, ok bool) {
 	sql := `
 		SELECT *
 		from tb_users as tu
-		where uid!=?;`
-	u.Raw(sql, uid).Find(&userinfo)
+		where uid IN (
+		    SELECT tr.following_id
+		    FROM tb_relations as tr
+		    WHERE  tr.follower_id=?) AND
+		    uid IN (
+		    SELECT tr.follower_id
+		    FROM tb_relations as tr
+		    WHERE  tr.following_id=?
+		    );`
+	result := u.Raw(sql, uid, uid).Find(&userinfo)
+	if result.Error != nil {
+		variable.ZapLog.Error("GetFriends SQL执行出错!", zap.Error(result.Error))
+		ok = false
+		return
+	}
+	ok = true
+	return
+}
+
+func (u *UserModel) GetFollow(uid int64) (userinfo []model.User, ok bool) {
+	sql := `
+		SELECT *
+		from tb_users as tu
+		where uid IN (
+		    SELECT tr.following_id
+		    FROM tb_relations as tr
+		    WHERE  tr.follower_id=?);`
+	result := u.Raw(sql, uid).Find(&userinfo)
+	if result.Error != nil {
+		variable.ZapLog.Error("GetFollow SQL执行出错!", zap.Error(result.Error))
+		ok = false
+		return
+	}
+	ok = true
+	return
+}
+
+func (u *UserModel) GetFans(uid int64) (userinfo []model.User, ok bool) {
+	sql := `
+		SELECT *
+		from tb_users as tu
+		where uid IN (
+		    SELECT tr.follower_id
+		    FROM tb_relations as tr
+		    WHERE  tr.following_id=?);`
+	result := u.Raw(sql, uid).Find(&userinfo)
+	if result.Error != nil {
+		variable.ZapLog.Error("GetFans SQL执行出错!", zap.Error(result.Error))
+		ok = false
+		return
+	}
+	ok = true
 	return
 }
 

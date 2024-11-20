@@ -32,16 +32,18 @@ const (
 	TimestampShift = SequenceBits + MachineIdBits     //时间戳左移位数
 
 	// CURD 常用业务状态码
-	CurdStatusOkCode         int    = 200
-	CurdStatusOkMsg          string = "Success"
-	CurdCreatFailCode        int    = -400200
-	CurdCreatFailMsg         string = "新增失败"
-	CurdUpdateFailCode       int    = -400201
-	CurdUpdateFailMsg        string = "更新失败"
-	CurdDeleteFailCode       int    = -400202
-	CurdDeleteFailMsg        string = "删除失败"
-	CurdSelectFailCode       int    = -400203
-	CurdSelectFailMsg        string = "查询无数据"
+	CurdStatusOkCode int    = 200
+	CurdStatusOkMsg  string = "Success"
+	// 增删差改，用于表示SQL代码执行结果
+	CurdInsertFailCode int    = -400200
+	CurdInsertFailMsg  string = "新增失败"
+	CurdDeleteFailCode int    = -400201
+	CurdDeleteFailMsg  string = "删除失败"
+	CurdSelectFailCode int    = -400202
+	CurdSelectFailMsg  string = "查询失败"
+	CurdUpdateFailCode int    = -400203
+	CurdUpdateFailMsg  string = "更新失败"
+
 	CurdRegisterFailCode     int    = -400204
 	CurdRegisterFailMsg      string = "注册失败"
 	CurdRegisterOkMsg        string = "注册成功"

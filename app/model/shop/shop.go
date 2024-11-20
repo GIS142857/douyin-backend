@@ -1,6 +1,7 @@
 package shop
 
 import (
+	"douyin-backend/app/global/variable"
 	"douyin-backend/app/model"
 	"gorm.io/gorm"
 )
@@ -22,7 +23,7 @@ func CreateShopFactory(sqlType string) *GoodsModel {
 	return &GoodsModel{DB: model.UseDbConn(sqlType)}
 }
 
-func (u *GoodsModel) GetShopRecommended(uid, pageNo, pageSize int64) (slice []Goods, total int64) {
+func (u *GoodsModel) GetShopRecommended(uid, pageNo, pageSize int64) (slice []Goods, total int64, ok bool) {
 	sql1 := `
 		SELECT *
 		from tb_goods as tu
@@ -33,7 +34,13 @@ func (u *GoodsModel) GetShopRecommended(uid, pageNo, pageSize int64) (slice []Go
 		`
 
 	offset := pageNo * pageSize
-	u.Raw(sql2).Count(&total)
-	u.Raw(sql1, pageSize, offset).Find(&slice)
+	result1 := u.Raw(sql2).Count(&total)
+	result2 := u.Raw(sql1, pageSize, offset).Find(&slice)
+
+	if result1.Error != nil || result2 != nil {
+		variable.ZapLog.Error("GetShopRecommended SQL代码执行出错!")
+		ok = false
+		return
+	}
 	return
 }

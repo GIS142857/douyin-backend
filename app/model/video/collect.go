@@ -34,14 +34,3 @@ func (c *CollectModel) VideoCollect(uid, awemeID int64, action bool) bool {
 		return false
 	}
 }
-
-func (c *CollectModel) VideoUndoCollect(uid, awemeID int64) bool {
-	sql := `DELETE FROM tb_collects
-			WHERE uid=? AND aweme_id=?;`
-	result := c.Exec(sql, uid, awemeID)
-	if result.RowsAffected > 0 {
-		return true
-	} else {
-		return false
-	}
-}

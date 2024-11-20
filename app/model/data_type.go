@@ -7,7 +7,7 @@ import (
 
 type User struct {
 	*gorm.DB                `gorm:"-" json:"-"`
-	Uid                     int64           `json:"uid"`                       // bigint
+	Uid                     string          `json:"uid"`                       // bigint
 	ShortID                 int             `json:"short_id"`                  // int
 	UniqueID                string          `json:"unique_id"`                 // varchar(255)
 	Gender                  int             `json:"gender"`                    // int

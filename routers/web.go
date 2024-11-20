@@ -66,16 +66,21 @@ func InitWebRouter() *gin.Engine {
 	user := router.Group("user/")
 	{
 		user.GET("userinfo", validatorFactory.Create(consts.ValidatorPrefix+"GetUserInfo"))
-		user.GET("video_list", validatorFactory.Create(consts.ValidatorPrefix+"GetUserVideoList"))
+		user.GET("video-list", validatorFactory.Create(consts.ValidatorPrefix+"GetUserVideoList"))
 		user.GET("panel", validatorFactory.Create(consts.ValidatorPrefix+"GetPanel"))
 		user.GET("friends", validatorFactory.Create(consts.ValidatorPrefix+"GetFriends"))
+		user.GET("follow", validatorFactory.Create(consts.ValidatorPrefix+"GetFollow"))
+		user.GET("fans", validatorFactory.Create(consts.ValidatorPrefix+"GetFans"))
+
+		user.POST("attention", validatorFactory.Create(consts.ValidatorPrefix+"Attention"))
+		user.GET("aweme-status", validatorFactory.Create(consts.ValidatorPrefix+"AwemeStatus"))
 		// 用户界面视频加载 API
-		user.GET("my_video", validatorFactory.Create(consts.ValidatorPrefix+"GetMyVideo"))
-		user.GET("my_private", validatorFactory.Create(consts.ValidatorPrefix+"GetMyPrivateVideo"))
-		user.GET("my_like_video", validatorFactory.Create(consts.ValidatorPrefix+"GetMyLikeVideo"))
-		user.GET("my_collect_video", validatorFactory.Create(consts.ValidatorPrefix+"GetMyCollectVideo"))
-		user.GET("my_history_video", validatorFactory.Create(consts.ValidatorPrefix+"GetMyHistoryVideo"))
-		user.GET("my_history_other", validatorFactory.Create(consts.ValidatorPrefix+"GetMyHistoryOther"))
+		user.GET("my-video", validatorFactory.Create(consts.ValidatorPrefix+"GetMyVideo"))
+		user.GET("my-private", validatorFactory.Create(consts.ValidatorPrefix+"GetMyPrivateVideo"))
+		user.GET("my-like-video", validatorFactory.Create(consts.ValidatorPrefix+"GetMyLikeVideo"))
+		user.GET("my-collect-video", validatorFactory.Create(consts.ValidatorPrefix+"GetMyCollectVideo"))
+		user.GET("my-history-video", validatorFactory.Create(consts.ValidatorPrefix+"GetMyHistoryVideo"))
+		user.GET("my-history-other", validatorFactory.Create(consts.ValidatorPrefix+"GetMyHistoryOther"))
 	}
 	post := router.Group("post/")
 	{
@@ -93,13 +98,17 @@ func InitWebRouter() *gin.Engine {
 		video.POST("share", validatorFactory.Create(consts.ValidatorPrefix+"VideoShare"))
 		video.GET("comments", validatorFactory.Create(consts.ValidatorPrefix+"GetComments"))
 		video.GET("recommended", validatorFactory.Create(consts.ValidatorPrefix+"GetVideoRecommended"))
-		video.GET("star", validatorFactory.Create(consts.ValidatorPrefix+"GetStar"))
-		video.GET("long_recommended", validatorFactory.Create(consts.ValidatorPrefix+"GetLongVideoRecommended"))
+		video.GET("long-recommended", validatorFactory.Create(consts.ValidatorPrefix+"GetLongVideoRecommended"))
 	}
 
 	jwt := router.Group("jwt")
 	{
 		jwt.POST("jsonInBlacklist", validatorFactory.Create(consts.ValidatorPrefix+"JsonInBlacklist")) // jwt加入黑名单
+	}
+	msg := router.Group("message")
+	{
+		msg.GET("all-msg", validatorFactory.Create(consts.ValidatorPrefix+"AllMsg"))
+		msg.POST("send-msg", validatorFactory.Create(consts.ValidatorPrefix+"SendMsg"))
 	}
 	return router
 }

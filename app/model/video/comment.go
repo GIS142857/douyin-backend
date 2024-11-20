@@ -2,7 +2,6 @@ package video
 
 import (
 	"douyin-backend/app/model"
-	"fmt"
 	"gorm.io/gorm"
 	"time"
 )
@@ -35,18 +34,20 @@ func CreateCommentFactory(sqlType string) *CommentModel {
 	return &CommentModel{DB: model.UseDbConn(sqlType)}
 }
 
-func (c *CommentModel) GetComments(aweme_id int64) (comments []Comment) {
+func (c *CommentModel) GetComments(aweme_id int64) (comments []Comment, ok bool) {
 	sql := `
 		SELECT *
 		FROM tb_comments as tc
 		WHERE aweme_id = ?
 		ORDER BY create_time DESC;
 	`
+	comments = []Comment{}
 	result := c.Raw(sql, aweme_id).Scan(&comments)
 	if result.Error != nil {
-		fmt.Println("Query Error:", result.Error)
-		return nil
+		ok = false
+		return
 	}
+	ok = true
 	return
 }
 

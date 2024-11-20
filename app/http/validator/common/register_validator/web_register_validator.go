@@ -3,6 +3,7 @@ package register_validator
 import (
 	"douyin-backend/app/core/container"
 	"douyin-backend/app/global/consts"
+	"douyin-backend/app/http/validator/web/douyin/message"
 	"douyin-backend/app/http/validator/web/douyin/post"
 	"douyin-backend/app/http/validator/web/douyin/shop"
 	"douyin-backend/app/http/validator/web/douyin/user"
@@ -39,8 +40,20 @@ func WebRegisterValidator() {
 		key = consts.ValidatorPrefix + "GetPanel"
 		containers.Set(key, user.GetPanel{})
 
+		key = consts.ValidatorPrefix + "Attention"
+		containers.Set(key, user.Attention{})
+
+		key = consts.ValidatorPrefix + "AwemeStatus"
+		containers.Set(key, user.AwemeStatus{})
+
 		key = consts.ValidatorPrefix + "GetFriends"
 		containers.Set(key, user.GetFriends{})
+
+		key = consts.ValidatorPrefix + "GetFollow"
+		containers.Set(key, user.GetFollow{})
+
+		key = consts.ValidatorPrefix + "GetFans"
+		containers.Set(key, user.GetFans{})
 
 		key = consts.ValidatorPrefix + "GetMyVideo"
 		containers.Set(key, user.GetMyVideo{})
@@ -72,12 +85,6 @@ func WebRegisterValidator() {
 		key = consts.ValidatorPrefix + "GetComments"
 		containers.Set(key, video.GetComments{})
 
-		key = consts.ValidatorPrefix + "GetStar"
-		containers.Set(key, video.GetStar{})
-
-		key = consts.ValidatorPrefix + "GetShare"
-		containers.Set(key, video.GetShare{})
-
 		key = consts.ValidatorPrefix + "VideoDigg"
 		containers.Set(key, video.VideoDigg{})
 
@@ -100,5 +107,13 @@ func WebRegisterValidator() {
 	{
 		key = consts.ValidatorPrefix + "GetPostRecommended"
 		containers.Set(key, post.GetPostRecommended{})
+	}
+	// msg
+	{
+		key = consts.ValidatorPrefix + "AllMsg"
+		containers.Set(key, message.AllMsg{})
+
+		key = consts.ValidatorPrefix + "SendMsg"
+		containers.Set(key, message.SendMsg{})
 	}
 }

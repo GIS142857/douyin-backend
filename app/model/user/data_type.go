@@ -11,3 +11,9 @@ type Account struct {
 	Phone    string `json:"phone"`    // varchar(11)
 	Password string `json:"password"` // varchar(128)
 }
+
+type AwemeStatusModel struct {
+	Attentions []int64
+	Likes      []string
+	Collects   []string
+}
