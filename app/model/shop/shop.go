@@ -37,10 +37,11 @@ func (u *GoodsModel) GetShopRecommended(uid, pageNo, pageSize int64) (slice []Go
 	result1 := u.Raw(sql2).Count(&total)
 	result2 := u.Raw(sql1, pageSize, offset).Find(&slice)
 
-	if result1.Error != nil || result2 != nil {
+	if result1.Error != nil || result2.Error != nil {
 		variable.ZapLog.Error("GetShopRecommended SQL代码执行出错!")
 		ok = false
 		return
 	}
+	ok = true
 	return
 }

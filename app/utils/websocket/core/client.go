@@ -5,13 +5,12 @@ import (
 	"douyin-backend/app/global/variable"
 	"douyin-backend/app/service/websocket/on_open_success"
 	"errors"
-	"net/http"
-	"sync"
-	"time"
-
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"go.uber.org/zap"
+	"net/http"
+	"sync"
+	"time"
 )
 
 type Client struct {
@@ -28,7 +27,7 @@ type Client struct {
 	on_open_success.ClientMoreParams // 这里追加一个结构体，方便开发者在成功上线后，可以自定义追加更多字段信息
 }
 
-// 处理握手+协议升级
+// OnOpen 处理握手+协议升级
 func (c *Client) OnOpen(context *gin.Context) (*Client, bool) {
 	// 1.升级连接,从http--->websocket
 	defer func() {
@@ -73,7 +72,7 @@ func (c *Client) OnOpen(context *gin.Context) (*Client, bool) {
 
 }
 
-// 主要功能主要是实时接收消息
+// ReadPump 主要功能主要是实时接收消息
 func (c *Client) ReadPump(callbackOnMessage func(messageType int, receivedData []byte), callbackOnError func(err error), callbackOnClose func()) {
 	// 回调 onclose 事件
 	defer func() {
@@ -106,7 +105,7 @@ func (c *Client) ReadPump(callbackOnMessage func(messageType int, receivedData [
 	}
 }
 
-// 发送消息，请统一调用本函数进行发送
+// SendMessage 发送消息，请统一调用本函数进行发送
 // 消息发送时增加互斥锁，加强并发情况下程序稳定性
 // 提醒：开发者发送消息时，不要调用 c.Conn.WriteMessage(messageType, []byte(message)) 直接发送消息
 func (c *Client) SendMessage(messageType int, message string) error {
@@ -126,7 +125,7 @@ func (c *Client) SendMessage(messageType int, message string) error {
 	}
 }
 
-// 按照websocket标准协议实现隐式心跳,Server端向Client远端发送ping格式数据包,浏览器收到ping标准格式，自动将消息原路返回给服务器
+// Heartbeat 按照websocket标准协议实现隐式心跳,Server端向Client远端发送ping格式数据包,浏览器收到ping标准格式，自动将消息原路返回给服务器
 func (c *Client) Heartbeat() {
 	//  1. 设置一个时钟，周期性的向client远端发送心跳数据包
 	ticker := time.NewTicker(c.PingPeriod)

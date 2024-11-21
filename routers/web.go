@@ -61,7 +61,7 @@ func InitWebRouter() *gin.Engine {
 		auth.POST("register", validatorFactory.Create(consts.ValidatorPrefix+"Register"))
 		auth.POST("login", validatorFactory.Create(consts.ValidatorPrefix+"Login"))
 	}
-
+	router.GET("message/ws", validatorFactory.Create(consts.ValidatorPrefix+"WebsocketConnect"))
 	router.Use(authorization.CheckTokenAuth())
 	user := router.Group("user/")
 	{
@@ -107,6 +107,7 @@ func InitWebRouter() *gin.Engine {
 	}
 	msg := router.Group("message")
 	{
+
 		msg.GET("all-msg", validatorFactory.Create(consts.ValidatorPrefix+"AllMsg"))
 		msg.POST("send-msg", validatorFactory.Create(consts.ValidatorPrefix+"SendMsg"))
 	}

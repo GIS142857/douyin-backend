@@ -3,6 +3,7 @@ package register_validator
 import (
 	"douyin-backend/app/core/container"
 	"douyin-backend/app/global/consts"
+	"douyin-backend/app/http/validator/common/websocket"
 	"douyin-backend/app/http/validator/web/douyin/message"
 	"douyin-backend/app/http/validator/web/douyin/post"
 	"douyin-backend/app/http/validator/web/douyin/shop"
@@ -110,10 +111,14 @@ func WebRegisterValidator() {
 	}
 	// msg
 	{
+		key = consts.ValidatorPrefix + "WebsocketConnect"
+		containers.Set(key, websocket.Connect{})
+
 		key = consts.ValidatorPrefix + "AllMsg"
 		containers.Set(key, message.AllMsg{})
 
 		key = consts.ValidatorPrefix + "SendMsg"
 		containers.Set(key, message.SendMsg{})
 	}
+
 }
