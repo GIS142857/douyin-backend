@@ -41,7 +41,9 @@ go run cmd/web/main.go
 ```
 
 ## 用法
-由于取消了前端的请求拦截以及将前端的部分代码做了修改，所以需要使用我修改过的前端代码进行部署，修改版的前端代码在这个fork的项目中：https://github.com/GIS142857/douyin.git
+由于取消了前端的请求拦截以及将前端的部分代码做了修改，所以需要使用我修改过的前端代码进行部署，修改版的前端代码在这个fork的项目中：
+
+https://github.com/GIS142857/douyin.git
 
 目前项目已经部署上线，访问 http://117.50.163.130:3000/login/password 
 
