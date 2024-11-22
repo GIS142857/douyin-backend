@@ -65,19 +65,21 @@ go run cmd/web/main.go
 
 ## 用法说明 (Usage)
 由于取消了前端的请求拦截以及将前端的很多代码做了修改，所以需要使用我修改过的前端代码进行部署，修改版的前端代码在这个 fork 的项目中：
-Modified Frontend Repository:
-https://github.com/GIS142857/douyin.git
+
+Modified Frontend Repository: https://github.com/GIS142857/douyin.git
 
 
 ## 技术交流 (Community)
-目前项目还需补充更多功能，欢迎提交 `PR`，非常感谢你对我们的支持！
-Feel free to submit PRs or reach out via email for any questions or suggestions:
-技术交流可以联系我的邮箱 <a href="mailto:fridalongwayhk4@gmail.com">fridalongwayhk4@gmail.com</a>
+目前项目还需补充更多功能，欢迎提交 `PR`，非常感谢你对我们的支持！技术交流可以联系我的邮箱.
+
+Feel free to submit PRs or reach out via email for any questions or suggestions:<a href="mailto:fridalongwayhk4@gmail.com">fridalongwayhk4@gmail.com</a>
 
 ## 注意事项 (Notes)
 注意：本项目仅适用于学习和研究，不得用于商业使用。
+
 Notes: This project is for learning and research purposes only and must not be used for commercial purposes.
 
 ## 许可证 (License)
 本项目基于 MIT 许可证发布，详情请查看 [LICENSE](LICENSE)。
+
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
