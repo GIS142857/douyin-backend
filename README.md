@@ -8,9 +8,9 @@
 
 
 <div>
-<img width="150px" src='docs/imgs/xmg24-2nkbp.gif'/>
-<img width="150px" src='docs/imgs/50nea-frbnj.gif'/>
 <img width="150px" src='docs/imgs/fxklv-5nafx.gif'/>
+<img width="150px" src='docs/imgs/50nea-frbnj.gif'/>
+<img width="150px" src='docs/imgs/xmg24-2nkbp.gif'/>
 <img width="150px" src='docs/imgs/vfcfs-95rgz.gif'/>
 <img width="150px" src='docs/imgs/xmg24-2nkbp.gif'/>
 </div>
