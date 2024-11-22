@@ -1,7 +1,19 @@
-# douyin-backend
+<h1 align="center">
+  Douyin-Backend
+</h1>
+
 
 该项目为开源前端项目的后端部分，使用Go语言编写，主要实现了短视频的点赞、评论、关注、分享等功能。
 前端项目地址：https://github.com/zyronon/douyin.git
+
+
+<div>
+<img width="150px" src='docs/imgs/xmg24-2nkbp.gif'/>
+<img width="150px" src='docs/imgs/50nea-frbnj.gif'/>
+<img width="150px" src='docs/imgs/fxklv-5nafx.gif'/>
+<img width="150px" src='docs/imgs/vfcfs-95rgz.gif'/>
+<img width="150px" src='docs/imgs/xmg24-2nkbp.gif'/>
+</div>
 
 ## 目录
 

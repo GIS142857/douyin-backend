@@ -68,7 +68,7 @@ func (w *Ws) OnMessage(context *gin.Context) {
 		// 查找接收者 WebSocket 客户端
 		rxUid, _ := strconv.ParseInt(msg.RxUid, 10, 64)
 		targetClient, exists := wsManager.GetClient(rxUid)
-		if exists {
+		if exists && (rxUid != txUid) {
 			// 转发消息
 			responseMsg, _ := json.Marshal(msg)
 			if err := targetClient.SendMessage(messageType, string(responseMsg)); err != nil {
@@ -76,6 +76,10 @@ func (w *Ws) OnMessage(context *gin.Context) {
 			} else {
 				// 更新消息状态为 SENT
 				msg.ReadState = 1
+			}
+			sendStatus := message.CreateMsgFactory("").SendMsg(txUid, rxUid, msg.MsgType, msg.MsgData, msg.ReadState, msg.CreateTime)
+			if !sendStatus {
+				variable.ZapLog.Error("消息持久化失败!")
 			}
 		} else {
 			// 接收者不在线，将消息存储到数据库
