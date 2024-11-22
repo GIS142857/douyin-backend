@@ -12,7 +12,7 @@
 <img width="150px" src='docs/imgs/50nea-frbnj.gif'/>
 <img width="150px" src='docs/imgs/xmg24-2nkbp.gif'/>
 <img width="150px" src='docs/imgs/fxklv-5nafx.gif'/>
-<img width="150px" src='docs/imgs/xmg24-2nkbp.gif'/>
+<img width="150px" src='docs/imgs/1mc6q-ywxs1.gif'/>
 </div>
 
 ## 目录
