@@ -15,22 +15,17 @@ var wsManager = &WsManager{
 	clients: sync.Map{},
 }
 
-// 获取单例实例
-func GetWsManager() *WsManager {
-	return wsManager
-}
-
-// 添加客户端连接
+// AddClient 添加客户端连接
 func (m *WsManager) AddClient(userID int64, conn *core.Client) {
 	m.clients.Store(userID, conn)
 }
 
-// 删除客户端连接
+// RemoveClient 删除客户端连接
 func (m *WsManager) RemoveClient(userID int64) {
 	m.clients.Delete(userID)
 }
 
-// 获取客户端连接
+// GetClient 获取客户端连接
 func (m *WsManager) GetClient(userID int64) (*core.Client, bool) {
 	client, ok := m.clients.Load(userID)
 	if ok {

@@ -5,12 +5,14 @@ import (
 	"douyin-backend/app/global/variable"
 	controllerWs "douyin-backend/app/http/controller/websocket"
 	"douyin-backend/app/http/validator/core/data_transfer"
+	userstoken "douyin-backend/app/service/users/token"
+	"douyin-backend/app/utils/response"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
 type Connect struct {
-	Token string `form:"token" json:"token" binding:"required"`
+	Token string `form:"token" json:"token" binding:"required,min=20"`
 }
 
 // 验证器语法，参见 Register.go文件，有详细说明
@@ -26,6 +28,23 @@ func (c Connect) CheckParams(context *gin.Context) {
 	if err := context.ShouldBind(&c); err != nil {
 		variable.ZapLog.Error("客户端上线参数不合格", zap.Error(err))
 		return
+	}
+	token := c.Token
+	if len(token) >= 20 {
+		tokenIsEffective := userstoken.CreateUserFactory().IsEffective(token)
+		if tokenIsEffective {
+			if customeToken, err := userstoken.CreateUserFactory().ParseToken(token); err == nil {
+				key := variable.ConfigYml.GetString("Token.BindContextKeyName")
+				// token 验证通过并绑定在请求的上下文中
+				context.Set(key, customeToken)
+			} else {
+				response.TokenParseFail(context, err)
+			}
+		} else {
+			response.ErrorTokenAuthFail(context)
+		}
+	} else {
+		response.ErrorTokenBaseInfo(context)
 	}
 	extraAddBindDataContext := data_transfer.DataAddContext(c, consts.ValidatorPrefix, context)
 	if extraAddBindDataContext == nil {

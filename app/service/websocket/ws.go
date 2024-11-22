@@ -1,12 +1,11 @@
 package websocket
 
 import (
-	"douyin-backend/app/global/consts"
 	"douyin-backend/app/global/my_errors"
 	"douyin-backend/app/global/variable"
-	userstoken "douyin-backend/app/service/users/token"
+	"douyin-backend/app/model/message"
+	"douyin-backend/app/utils/auth"
 	"douyin-backend/app/utils/websocket/core"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/goccy/go-json"
 	"github.com/gorilla/websocket"
@@ -52,20 +51,9 @@ func (w *Ws) OnOpen(context *gin.Context) (*Ws, bool) {
 // OnMessage 处理业务消息
 func (w *Ws) OnMessage(context *gin.Context) {
 	// 当前用户的 UID
-	var txUid int64
-	token := context.GetString(consts.ValidatorPrefix + "token")
-	tokenIsEffective := userstoken.CreateUserFactory().IsEffective(token)
-	if tokenIsEffective {
-		if customeToken, err := userstoken.CreateUserFactory().ParseToken(token); err == nil {
-			txUid = customeToken.UID
-		} else {
-			variable.ZapLog.Error("Ws.OnMessage ParseToken Failed!", zap.Error(err))
-			return
-		}
-	}
+	txUid := auth.GetUidFromToken(context)
 	// 注册当前用户的 WebSocket 连接
 	wsManager.AddClient(txUid, w.WsClient)
-
 	go w.WsClient.ReadPump(func(messageType int, receivedData []byte) {
 		// 解析 JSON 消息
 		var msg Msg
@@ -91,7 +79,10 @@ func (w *Ws) OnMessage(context *gin.Context) {
 			}
 		} else {
 			// 接收者不在线，将消息存储到数据库
-			fmt.Println("接收者不在线!")
+			sendStatus := message.CreateMsgFactory("").SendMsg(txUid, rxUid, msg.MsgType, msg.MsgData, msg.ReadState, msg.CreateTime)
+			if !sendStatus {
+				variable.ZapLog.Error("消息持久化失败!")
+			}
 		}
 
 	}, w.OnError, func() {

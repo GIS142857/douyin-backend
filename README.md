@@ -60,4 +60,5 @@ password: 00000000
 注意：本项目仅适用于学习和研究，不得用于商业使用。
 
 ## 许可证
-[MIT](LICENSE)
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
