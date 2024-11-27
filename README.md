@@ -32,7 +32,7 @@ This project is based on an open-source frontend project, developed in Go for th
 ## 在线访问 (Online Access)
 
 **访问地址 (URL):**  
-http://117.50.163.130
+http://www.shortvideo.site
 
 使用以下账号登录体验：  
 **账号 (Phone):** 19911220000 *(非真实电话号码)*  
