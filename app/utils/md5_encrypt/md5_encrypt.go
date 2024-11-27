@@ -12,7 +12,7 @@ func MD5(params string) string {
 	return hex.EncodeToString(md5Ctx.Sum(nil))
 }
 
-// 先base64，然后MD5
+// Base64Md5 先base64，然后MD5
 func Base64Md5(params string) string {
 	return MD5(base64.StdEncoding.EncodeToString([]byte(params)))
 }

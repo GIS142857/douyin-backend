@@ -27,7 +27,7 @@ type Msg struct {
 	DeleteTime int    `json:"delete_time"` // 删除时间
 }
 
-// onOpen 事件函数
+// OnOpen 事件函数
 func (w *Ws) OnOpen(context *gin.Context) (*Ws, bool) {
 	if client, ok := (&core.Client{}).OnOpen(context); ok {
 
