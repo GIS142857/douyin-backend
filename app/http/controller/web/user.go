@@ -54,6 +54,24 @@ func (u *UserController) Login(ctx *gin.Context) {
 	}
 }
 
+func (u *UserController) UpdateInfo(ctx *gin.Context) {
+	uid := auth.GetUidFromToken(ctx)
+	var operationType = ctx.GetFloat64(consts.ValidatorPrefix + "operation_type")
+	var data = ctx.GetString(consts.ValidatorPrefix + "data")
+	updateState := user.CreateUserFactory("").UpdateInfo(uid, int(operationType), data)
+	if updateState {
+		response.Success(ctx, consts.CurdStatusOkMsg, gin.H{
+			"data": updateState,
+			"msg":  "修改成功!",
+		})
+	} else {
+		response.Fail(ctx, consts.CurdUpdateFailCode, consts.CurdUpdateFailMsg, gin.H{
+			"data": updateState,
+			"msg":  "修改失败!",
+		})
+	}
+}
+
 func (u *UserController) Attention(ctx *gin.Context) {
 	var uid = auth.GetUidFromToken(ctx)
 	var followingId = ctx.GetString(consts.ValidatorPrefix + "following_id")

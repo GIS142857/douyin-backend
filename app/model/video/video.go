@@ -3,6 +3,8 @@ package video
 import (
 	"douyin-backend/app/global/variable"
 	"douyin-backend/app/model"
+	"douyin-backend/app/utils/auth"
+	"github.com/gin-gonic/gin"
 	"github.com/goccy/go-json"
 	"go.uber.org/zap"
 	"golang.org/x/exp/rand"
@@ -11,29 +13,7 @@ import (
 )
 
 type VideoModel struct {
-	*gorm.DB        `gorm:"-" json:"-"`
-	AwemeID         int64           `json:"aweme_id"`         // bigint
-	VideoDesc       string          `json:"video_desc"`       // text
-	CreateTime      int             `json:"create_time"`      // int
-	MusicID         int64           `json:"music_id"`         // bigint
-	SourceID        int64           `json:"source_id"`        // bigint
-	ShareURL        string          `json:"share_url"`        // text
-	StatisticsID    int64           `json:"statistics_id"`    // bigint
-	Status          json.RawMessage `json:"status"`           // json (use a custom JSON type or map for unmarshaling)
-	TextExtra       json.RawMessage `json:"text_extra"`       // json
-	IsTop           bool            `json:"is_top"`           // tinyint(1) (boolean)
-	ShareInfo       json.RawMessage `json:"share_info"`       // json
-	Duration        int             `json:"duration"`         // int
-	ImageInfos      json.RawMessage `json:"image_infos"`      // json
-	RiskInfos       json.RawMessage `json:"risk_infos"`       // json
-	Position        string          `json:"position"`         // varchar(255)
-	AuthorUserID    int64           `json:"author_user_id"`   // bigint
-	PreventDownload bool            `json:"prevent_download"` // tinyint(1) (boolean)
-	LongVideo       json.RawMessage `json:"long_video"`       // json
-	AwemeControl    json.RawMessage `json:"aweme_control"`    // json
-	Images          json.RawMessage `json:"images"`           // json
-	SuggestWords    json.RawMessage `json:"suggest_words"`    // json
-	VideoTag        json.RawMessage `json:"video_tag"`        // json
+	*gorm.DB `gorm:"-" json:"-"`
 }
 
 func CreateVideoFactory(sqlType string) *VideoModel {
@@ -134,8 +114,8 @@ func (v *VideoModel) GetMyVideo(Uid, pageNo, pageSize int64) (slice []model.Vide
 			a.video_tag
 		FROM tb_videos AS a
 		LEFT JOIN tb_music AS tm ON a.music_id = tm.id
-		LEFT JOIN tb_source AS ts ON a.source_id = ts.id
-		LEFT JOIN tb_statistics AS ts2 ON a.statistics_id = ts2.id
+		LEFT JOIN tb_source AS ts ON a.aweme_id = ts.id
+		LEFT JOIN tb_statistics AS ts2 ON a.aweme_id = ts2.id
 		LEFT JOIN tb_users AS tu ON a.author_user_id = tu.uid
 		WHERE a.author_user_id = ? 
 			AND JSON_EXTRACT(a.status, '$.private_status') = 0
@@ -252,8 +232,8 @@ func (v *VideoModel) GetMyPrivateVideo(Uid, pageNo, pageSize int64) (slice []mod
 			a.video_tag
 			FROM tb_videos as a
 			LEFT JOIN tb_music as tm ON a.music_id = tm.id
-			LEFT JOIN tb_source as ts ON a.source_id = ts.id
-			LEFT JOIN tb_statistics as ts2 ON a.statistics_id = ts2.id
+			LEFT JOIN tb_source as ts ON a.aweme_id = ts.id
+			LEFT JOIN tb_statistics as ts2 ON a.aweme_id = ts2.id
 			LEFT JOIN tb_users AS tu ON a.author_user_id = tu.uid
 			WHERE a.author_user_id = ? AND JSON_EXTRACT(status, '$.private_status') != 0
 			ORDER BY a.create_time DESC
@@ -372,8 +352,8 @@ func (v *VideoModel) GetMyLikeVideo(Uid, pageNo, pageSize int64) (slice []model.
 			a.video_tag
 		FROM tb_videos AS a
 		LEFT JOIN tb_music AS tm ON a.music_id = tm.id
-		LEFT JOIN tb_source AS ts ON a.source_id = ts.id
-		LEFT JOIN tb_statistics AS ts2 ON a.statistics_id = ts2.id
+		LEFT JOIN tb_source AS ts ON a.aweme_id = ts.id
+		LEFT JOIN tb_statistics AS ts2 ON a.aweme_id = ts2.id
 		LEFT JOIN tb_users AS tu ON a.author_user_id = tu.uid
 		WHERE a.aweme_id IN (
 		    SELECT td.aweme_id
@@ -502,8 +482,8 @@ func (v *VideoModel) GetMyCollectVideo(Uid, pageNo, pageSize int64) (slice []mod
 			a.video_tag
 		FROM tb_videos AS a
 		LEFT JOIN tb_music AS tm ON a.music_id = tm.id
-		LEFT JOIN tb_source AS ts ON a.source_id = ts.id
-		LEFT JOIN tb_statistics AS ts2 ON a.statistics_id = ts2.id
+		LEFT JOIN tb_source AS ts ON a.aweme_id = ts.id
+		LEFT JOIN tb_statistics AS ts2 ON a.aweme_id = ts2.id
 		LEFT JOIN tb_users AS tu ON a.author_user_id = tu.uid
 		WHERE a.aweme_id IN (
 		    SELECT td.aweme_id
@@ -632,8 +612,8 @@ func (v *VideoModel) GetMyHistoryVideo(Uid, pageNo, pageSize int64) (slice []mod
 			a.video_tag
 		FROM tb_videos AS a
 		LEFT JOIN tb_music AS tm ON a.music_id = tm.id
-		LEFT JOIN tb_source AS ts ON a.source_id = ts.id
-		LEFT JOIN tb_statistics AS ts2 ON a.statistics_id = ts2.id
+		LEFT JOIN tb_source AS ts ON a.aweme_id = ts.id
+		LEFT JOIN tb_statistics AS ts2 ON a.aweme_id = ts2.id
 		LEFT JOIN tb_users AS tu ON a.author_user_id = tu.uid
 		WHERE a.aweme_id IN (
 		    SELECT th.aweme_id
@@ -766,8 +746,8 @@ func (v *VideoModel) GetVideoRecommended(Uid, start, pageSize int64) (slice []mo
 			a.video_tag
 		FROM tb_videos AS a
 		LEFT JOIN tb_music AS tm ON a.music_id = tm.id
-		LEFT JOIN tb_source AS ts ON a.source_id = ts.id
-		LEFT JOIN tb_statistics AS ts2 ON a.statistics_id = ts2.id
+		LEFT JOIN tb_source AS ts ON a.aweme_id = ts.id
+		LEFT JOIN tb_statistics AS ts2 ON a.aweme_id = ts2.id
 		LEFT JOIN tb_users AS tu ON a.author_user_id = tu.uid
 		WHERE JSON_EXTRACT(a.status, '$.private_status') = 0
 		LIMIT ? OFFSET ?;
@@ -892,8 +872,8 @@ func (v *VideoModel) GetLongVideoRecommended(Uid, PageNo, pageSize int64) (slice
 			a.video_tag
 		FROM tb_videos AS a
 		LEFT JOIN tb_music AS tm ON a.music_id = tm.id
-		LEFT JOIN tb_source AS ts ON a.source_id = ts.id
-		LEFT JOIN tb_statistics AS ts2 ON a.statistics_id = ts2.id
+		LEFT JOIN tb_source AS ts ON a.aweme_id = ts.id
+		LEFT JOIN tb_statistics AS ts2 ON a.aweme_id = ts2.id
 		LEFT JOIN tb_users AS tu ON a.author_user_id = tu.uid
 		WHERE JSON_EXTRACT(a.status, '$.private_status') = 0
 		LIMIT ? OFFSET ?;
@@ -1012,8 +992,8 @@ func (v *VideoModel) GetUserVideoList(Uid int64) (slice []model.Video, ok bool) 
 			a.video_tag
 		FROM tb_videos AS a
 		LEFT JOIN tb_music AS tm ON a.music_id = tm.id
-		LEFT JOIN tb_source AS ts ON a.source_id = ts.id
-		LEFT JOIN tb_statistics AS ts2 ON a.statistics_id = ts2.id
+		LEFT JOIN tb_source AS ts ON a.aweme_id = ts.id
+		LEFT JOIN tb_statistics AS ts2 ON a.aweme_id = ts2.id
 		LEFT JOIN tb_users AS tu ON a.author_user_id = tu.uid
 		WHERE a.author_user_id = ? 
 			AND JSON_EXTRACT(a.status, '$.private_status') = 0
@@ -1026,4 +1006,126 @@ func (v *VideoModel) GetUserVideoList(Uid int64) (slice []model.Video, ok bool) 
 	}
 	ok = true
 	return
+}
+
+func (v *VideoModel) InsertVideo(ctx *gin.Context, playUrl, videoDesc, coverUrl string, privateStatus int) bool {
+	// 开启事务
+	tx := v.DB.Begin()
+	if tx.Error != nil {
+		variable.ZapLog.Error("Failed to start transaction")
+		return false
+	}
+
+	// 插入 tb_videos 表
+	videoSQL := `INSERT INTO tb_videos (video_desc, create_time, status, is_top, duration, author_user_id, prevent_download, aweme_control) 
+				 VALUES (?, ?, ?, ?, ?, ?, ?, ?);`
+	createTime := time.Now().Unix()
+	statusMap := map[string]interface{}{
+		"part_see":            0,
+		"is_delete":           false,
+		"allow_share":         true,
+		"in_reviewing":        false,
+		"is_prohibited":       false,
+		"review_result":       map[string]int{"review_status": 0},
+		"private_status":      privateStatus,
+		"listen_video_status": 0,
+	}
+	status, _ := json.Marshal(statusMap)
+	isTop := 0
+	duration := 10000
+	authorUserId := auth.GetUidFromToken(ctx)
+	awemeControlMap := map[string]interface{}{
+		"can_share":        true,
+		"can_comment":      true,
+		"can_forward":      true,
+		"can_show_comment": true,
+	}
+	awemeControl, _ := json.Marshal(awemeControlMap)
+	videoInsertResult := tx.Exec(videoSQL, videoDesc, createTime, status, isTop, duration, authorUserId, false, awemeControl)
+	if videoInsertResult.Error != nil {
+		variable.ZapLog.Error("Failed to insert tb_videos:", zap.Error(videoInsertResult.Error))
+		tx.Rollback()
+		return false
+	}
+	var awemeId int64
+	tx.Raw(`SELECT aweme_id FROM tb_videos WHERE author_user_id = ? ORDER BY create_time DESC LIMIT 1;`, authorUserId).Find(&awemeId)
+	// 插入 tb_source 表
+	sourceSQL := `INSERT INTO tb_source (id, play_addr, cover, duration, horizontal_type) 
+				  VALUES (?, ?, ?, ?, ?)`
+	playAddrMap := map[string]interface{}{
+		"width":     540,
+		"height":    960,
+		"url_list":  []string{"https://v3-web.douyinvod.com", "https://v26-web.douyinvod.com/", playUrl},
+		"data_size": duration,
+	}
+	playAddr, _ := json.Marshal(playAddrMap)
+	coverMap := map[string]interface{}{
+		"width": 720, "height": 720, "url_list": []string{coverUrl},
+	}
+	cover, _ := json.Marshal(coverMap)
+	sourceResult := tx.Exec(sourceSQL, awemeId, playAddr, cover, duration, 1)
+	if sourceResult.Error != nil {
+		variable.ZapLog.Error("Failed to insert tb_source:", zap.Error(sourceResult.Error))
+		tx.Rollback()
+		return false
+	}
+
+	// 插入 tb_statistics 表
+	statisticsSQL := `INSERT INTO tb_statistics (id) 
+						VALUES (?)`
+	statsResult := tx.Exec(statisticsSQL, awemeId) // 初始数据
+	if statsResult.Error != nil {
+		variable.ZapLog.Error("Failed to insert tb_statistics:", zap.Error(statsResult.Error))
+		tx.Rollback()
+		return false
+	}
+	//// 插入 tb_music 表
+	//musicSQL := `UPDATE tb_videos SET music_id=aweme_id WHERE aweme_id=?;
+	//			 INSERT INTO tb_music (id, cover_medium, cover_thumb, is_original, owner_id)
+	//			 VALUES (?,
+	//     				(SELECT avatar_small FROM tb_users WHERE id = ?),
+	//     				(SELECT avatar_large FROM tb_users WHERE id = ?),
+	//    				?,
+	//    				?);`
+	//uid := auth.GetUidFromToken(ctx)
+	//musicResult := tx.Exec(musicSQL, awemeId, awemeId, uid, uid, true, uid) // 初始数据
+	//if musicResult.Error != nil {
+	//	variable.ZapLog.Error("Failed to insert tb_music:", zap.Error(musicResult.Error))
+	//	tx.Rollback()
+	//	return false
+	//}
+	// 提交事务
+	if err := tx.Commit().Error; err != nil {
+		variable.ZapLog.Error("Failed to commit transaction:", zap.Error(err))
+		return false
+	}
+	return true
+}
+
+func (v *VideoModel) UpdateAvatar(ctx *gin.Context, urlAddr string) bool {
+	uid := auth.GetUidFromToken(ctx)
+	sql := `UPDATE tb_users SET avatar_small=? ,avatar_large=? WHERE uid=?`
+	avatarMap := map[string]interface{}{
+		"width": 720, "height": 720, "url_list": []string{urlAddr}}
+	avatar, _ := json.Marshal(avatarMap)
+	result := v.Exec(sql, avatar, avatar, uid)
+	if result.Error != nil {
+		variable.ZapLog.Error("UPDATE avatar Failed!", zap.Error(result.Error))
+		return false
+	}
+	return true
+}
+
+func (v *VideoModel) UpdateCover(ctx *gin.Context, urlAddr string) bool {
+	uid := auth.GetUidFromToken(ctx)
+	sql := `UPDATE tb_users SET cover_url=? WHERE uid=?`
+	coverMap := map[string]interface{}{
+		"width": 720, "height": 720, "url_list": []string{urlAddr}}
+	cover, _ := json.Marshal(coverMap)
+	result := v.Exec(sql, cover, uid)
+	if result.Error != nil {
+		variable.ZapLog.Error("UPDATE avatar Failed!", zap.Error(result.Error))
+		return false
+	}
+	return true
 }

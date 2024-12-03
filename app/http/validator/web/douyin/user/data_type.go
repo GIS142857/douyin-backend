@@ -29,5 +29,13 @@ type Action struct {
 }
 
 type FollowingId struct {
-	FollowingId *string `form:" binging" json:"following_id" binding:"required"`
+	FollowingId *string `form:" following_id" json:"following_id" binding:"required"`
+}
+
+type OperationType struct {
+	OperationType *float64 `form:"operation_type" json:"operation_type" binding:"required"`
+}
+
+type Data struct {
+	Data *string `form:" data" json:"data" binding:"required"`
 }

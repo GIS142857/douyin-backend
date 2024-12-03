@@ -58,10 +58,17 @@ SnowFlake:
   SnowFlakeMachineId: 2               # 如果本项目同时部署在多台机器，并且需要同时使用该算法，请为每一台机器设置不同的ID，区间范围: [0,1023]
 
 FileUploadSetting:
-  Size: 32                            # 设置上传文件的最大值，单位：M，注意： 如果go前置nginx服务器，nginx 默认限制文件上传大小为 50 M ,用户上传文件限制还需要继续修改 nginx 配置
+  Size: 50                            # 设置上传文件的最大值，单位：M，注意： 如果go前置nginx服务器，nginx 默认限制文件上传大小为 50 M ,用户上传文件限制还需要继续修改 nginx 配置
   UploadFileField: "file"             # post上传文件时，表单的键名
-  UploadFileSavePath: "/storage/app/uploaded/" #上传文件保存在路径, 该路径与 BasePath 进行拼接使用
-  UploadFileReturnPath: "/public/storage/uploaded/"
+  SourceUrlPrefix: "http://10.156.200.20"  # 资源访问URL前缀
+  UploadRootPath: "/home/sslee"  # 服务器存储资源的根目录
+  AvatarSmallUploadFileSavePath: "/images/avatar_small/"
+  AvatarLargeUploadFileSavePath: "/images/avatar_large/"
+  CoverUploadFileSavePath: "/images/cover/"
+  WhiteCoverUploadFileSavePath: "/images/white_cover/"
+  VideoUploadFileSavePath: "/videos/source/"
+  VideoCoverUploadFileSavePath: "/videos/cover/"
+
   AllowMimeType: #允许的文件mime类型列表
     - "image/jpeg"                    #jpg、jpeg图片格式
     - "image/png"                     #png图片格式

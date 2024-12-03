@@ -10,7 +10,7 @@ type User struct {
 	Uid                     string          `json:"uid"`                       // bigint
 	ShortID                 int             `json:"short_id"`                  // int
 	UniqueID                string          `json:"unique_id"`                 // varchar(255)
-	Gender                  int             `json:"gender"`                    // int
+	Gender                  string          `json:"gender"`                    // char(1)
 	UserAge                 int             `json:"user_age"`                  // int
 	Nickname                string          `json:"nickname"`                  // varchar(100)
 	Country                 string          `json:"country"`                   // varchar(100)
@@ -49,7 +49,7 @@ type Video struct {
 	*gorm.DB        `gorm:"-" json:"-"`
 	AwemeID         string          `json:"aweme_id"`         // bigint
 	VideoDesc       string          `json:"video_desc"`       // text
-	CreateTime      int             `json:"create_time"`      // int
+	CreateTime      int64           `json:"create_time"`      // int
 	Music           json.RawMessage `json:"music"`            // json
 	Video           json.RawMessage `json:"video"`            // bigint
 	ShareURL        string          `json:"share_url"`        // text

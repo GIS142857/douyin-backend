@@ -7,6 +7,7 @@ import (
 	"douyin-backend/app/http/validator/web/douyin/message"
 	"douyin-backend/app/http/validator/web/douyin/post"
 	"douyin-backend/app/http/validator/web/douyin/shop"
+	"douyin-backend/app/http/validator/web/douyin/upload"
 	"douyin-backend/app/http/validator/web/douyin/user"
 	"douyin-backend/app/http/validator/web/douyin/video"
 )
@@ -29,11 +30,25 @@ func WebRegisterValidator() {
 		key = consts.ValidatorPrefix + "Register"
 		containers.Set(key, user.Register{})
 	}
+	// upload
+	{
+		key = consts.ValidatorPrefix + "Avatar"
+		containers.Set(key, upload.Avatar{})
+
+		key = consts.ValidatorPrefix + "Cover"
+		containers.Set(key, upload.Cover{})
+
+		key = consts.ValidatorPrefix + "Video"
+		containers.Set(key, upload.Video{})
+	}
 
 	// user
 	{
 		key = consts.ValidatorPrefix + "GetUserInfo"
 		containers.Set(key, user.GetUserInfo{})
+
+		key = consts.ValidatorPrefix + "UpdateInfo"
+		containers.Set(key, user.UpdateInfo{})
 
 		key = consts.ValidatorPrefix + "GetUserVideoList"
 		containers.Set(key, user.GetUserVideoList{})

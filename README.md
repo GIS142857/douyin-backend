@@ -4,9 +4,9 @@
 
 ## 简介 (Introduction)
 
-该项目基于开源前端项目，采用 Go 语言开发后端，使用 Gin 框架构建，结合 MySQL 进行数据存储，并通过 Redis 实现鉴权 Token 的缓存管理。同时，集成 Gorse 提供推荐算法服务，基于 WebSocket 实现实时聊天功能。项目功能涵盖短视频的点赞、评论、收藏、分享以及用户关注和实时聊天等核心互动场景。后续将继续补充直播和其他功能。
+该项目基于开源前端项目，采用 Go 语言开发后端，使用 Gin 框架构建，结合 MySQL 进行数据存储，并通过 Redis 实现鉴权 Token 的缓存管理。同时，集成 Gorse 提供推荐算法服务，基于 WebSocket 实现实时聊天功能。项目功能涵盖用户注册、用户信息修改（如名称、头像、背景照片等）、视频发布、短视频的点赞、评论、收藏、分享以及用户关注和实时聊天等核心互动场景。后续将继续补充直播及其他功能。
 
-This project is based on an open-source frontend project, developed in Go for the backend using the Gin framework. It integrates MySQL for data storage and Redis for authentication token caching. Additionally, it incorporates Gorse for recommendation algorithm services and implements real-time chat using WebSocket. Key features include short video interactions like likes, comments, favorites, shares, user following, and real-time chat. Future updates will include live streaming and additional features.
+This project is based on an open-source frontend project, developed in Go for the backend using the Gin framework. It integrates MySQL for data storage and Redis for authentication token caching. Additionally, it incorporates Gorse for recommendation algorithm services and implements real-time chat using WebSocket. Key features include user registration, user profile updates (e.g., name, avatar, background photo), video publishing, and short video interactions like likes, comments, favorites, shares, user following, and real-time chat. Future updates will include live streaming and additional features.
 
 <p align="center">
   <img width="150px" src='docs/imgs/vfcfs-95rgz.gif'/>

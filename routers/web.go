@@ -65,9 +65,18 @@ func InitWebRouter() *gin.Engine {
 	}
 	router.GET("message/ws", validatorFactory.Create(consts.ValidatorPrefix+"WebsocketConnect"))
 	router.Use(authorization.CheckTokenAuth())
+
+	upload := router.Group("upload/")
+	{
+		upload.POST("avatar", validatorFactory.Create(consts.ValidatorPrefix+"Avatar"))
+		upload.POST("cover", validatorFactory.Create(consts.ValidatorPrefix+"Cover"))
+		upload.POST("video", validatorFactory.Create(consts.ValidatorPrefix+"Video"))
+	}
+
 	user := router.Group("user/")
 	{
 		user.GET("userinfo", validatorFactory.Create(consts.ValidatorPrefix+"GetUserInfo"))
+		user.POST("update-info", validatorFactory.Create(consts.ValidatorPrefix+"UpdateInfo"))
 		user.GET("video-list", validatorFactory.Create(consts.ValidatorPrefix+"GetUserVideoList"))
 		user.GET("panel", validatorFactory.Create(consts.ValidatorPrefix+"GetPanel"))
 		user.GET("friends", validatorFactory.Create(consts.ValidatorPrefix+"GetFriends"))

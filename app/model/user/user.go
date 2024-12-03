@@ -16,7 +16,7 @@ type UserModel struct {
 	UID                     int64           `json:"uid"`                       // bigint
 	ShortID                 int             `json:"short_id"`                  // int
 	UniqueID                string          `json:"unique_id"`                 // varchar(255)
-	Gender                  int             `json:"gender"`                    // int
+	Gender                  string          `json:"gender"`                    // char(1)
 	UserAge                 int             `json:"user_age"`                  // int
 	Nickname                string          `json:"nickname"`                  // varchar(100)
 	Country                 string          `json:"country"`                   // varchar(100)
@@ -56,9 +56,23 @@ func CreateUserFactory(sqlType string) *UserModel {
 }
 
 func (u *UserModel) Register(phone, password, userIp string) bool {
-	sql := `INSERT INTO tb_accounts(phone, password, last_login_ip, create_time) SELECT ?, ?, ?, ? FROM DUAL WHERE NOT EXISTS(SELECT 1 FROM tb_accounts WHERE phone=?)`
 	var createTime = time.Now().Unix()
-	result := u.Exec(sql, phone, password, userIp, createTime)
+	sql1 := `INSERT INTO tb_accounts(phone, password, last_login_ip, create_time) SELECT ?, ?, ?, ? FROM DUAL WHERE NOT EXISTS(SELECT 1 FROM tb_accounts WHERE phone=?)`
+	result := u.Exec(sql1, phone, password, userIp, createTime, phone)
+	if result.Error != nil {
+		variable.ZapLog.Error("Register SQL代码执行出错!", zap.Error(result.Error))
+		return false
+	}
+	// 获取 UID
+	var uid int64
+	sql2 := `SELECT uid FROM tb_accounts WHERE phone = ?;`
+	result = u.Raw(sql2, phone).Find(&uid)
+	if result.Error != nil {
+		variable.ZapLog.Error("Register-SELECT-uid SQL代码执行出错!", zap.Error(result.Error))
+		return false
+	}
+	sql3 := `INSERT INTO tb_users(uid, card_entries) VALUES (?, ?);`
+	result = u.Exec(sql3, uid, json.RawMessage{})
 	if result.RowsAffected > 0 {
 		return true
 	} else {
@@ -102,6 +116,31 @@ func (u *UserModel) Attention(uid, followingId int64, action bool) bool {
 	if result.RowsAffected > 0 {
 		return true
 	} else {
+		return false
+	}
+}
+
+func (u *UserModel) UpdateInfo(uid int64, operationType int, data string) bool {
+	// 目前支持三种修改类型(nickname/unique_id/signature)
+	var sql string
+	switch operationType {
+	case 1:
+		sql = `UPDATE tb_users SET nickname=? WHERE uid=?;`
+	case 2:
+		sql = `UPDATE tb_users SET unique_id=? WHERE uid=?;`
+	case 3:
+		sql = `UPDATE tb_users SET signature=? WHERE uid=?;`
+	case 4:
+		sql = `UPDATE tb_users SET gender=? WHERE uid=?;`
+	case 5:
+		sql = `UPDATE tb_users SET birthday=? WHERE uid=?;`
+
+	}
+	result := u.Exec(sql, data, uid)
+	if result.Error == nil {
+		return true
+	} else {
+		variable.ZapLog.Error("Update UserInfo failed!")
 		return false
 	}
 }
