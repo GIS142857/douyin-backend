@@ -1,5 +1,5 @@
 <h1 align="center">
-  Douyin-Backend
+  X-Tok-Backend
 </h1>
 
 ## 简介 (Introduction)
