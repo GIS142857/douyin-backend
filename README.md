@@ -64,7 +64,8 @@ go run cmd/web/main.go
 ```
 
 ## 用法说明 (Usage)
-由于取消了前端的请求拦截以及将前端的很多代码做了修改，所以需要使用我修改过的前端代码进行部署，修改版的前端代码在这个 fork 的项目中：
+由于取消了前端的请求拦截以及将前端的很多代码做了修改，所以需要使用我修改过的前端代码进行部署，修改版的前端代码在这个 fork 的项目中。
+详细用法请看[使用说明.md](docs/%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.md)
 
 Modified Frontend Repository: https://github.com/GIS142857/douyin.git
 

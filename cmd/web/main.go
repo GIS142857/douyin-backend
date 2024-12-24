@@ -9,5 +9,6 @@ import (
 // 后端路由启动入口
 func main() {
 	router := routers.InitWebRouter()
+	//fmt.Println(router.RouterGroup.Handlers)
 	_ = router.Run(variable.ConfigYml.GetString("HttpServer.Web.Port"))
 }

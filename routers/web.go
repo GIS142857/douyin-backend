@@ -64,6 +64,7 @@ func InitWebRouter() *gin.Engine {
 		auth.POST("login", validatorFactory.Create(consts.ValidatorPrefix+"Login"))
 	}
 	router.GET("message/ws", validatorFactory.Create(consts.ValidatorPrefix+"WebsocketConnect"))
+
 	router.Use(authorization.CheckTokenAuth())
 
 	upload := router.Group("upload/")
